@@ -28,6 +28,28 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   const { state, updateTaskSet, deleteTaskSet, addTaskToSet, addTaskSetToSet, toggleTaskSetHidden, currentView } = useApp();
   const { showUndoToast } = useToast();
   const depth = props.depth || 0;
+  
+  // 检查是否有隐藏的祖先节点
+  const hasHiddenAncestor = () => {
+    if (!props.taskSet.parentId) return false;
+    
+    const findParentTaskSet = (id: string): TaskSet | undefined => {
+      return state().taskSets.find(ts => ts.id === id);
+    };
+    
+    let currentParentId = props.taskSet.parentId;
+    while (currentParentId) {
+      const parent = findParentTaskSet(currentParentId);
+      if (parent?.hidden) return true;
+      currentParentId = parent?.parentId;
+    }
+    return false;
+  };
+  
+  // 只有当前TaskSet隐藏且没有隐藏的祖先时才应用透明度
+  const shouldApplyOpacity = () => {
+    return props.taskSet.hidden && currentView() === 'all' && !hasHiddenAncestor();
+  };
 
   const handleSave = () => {
     updateTaskSet(props.taskSet.id, {
@@ -113,7 +135,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
     <Show when={!props.taskSet.hidden || currentView() === 'all'}>
       <div style={`margin-left: ${depth * 20}px`}>
         <div class={`py-3 ${
-          props.taskSet.hidden && currentView() === 'all' ? 'opacity-50' : ''
+          shouldApplyOpacity() ? 'opacity-50' : ''
         }`}>
         <div class="flex items-center justify-between">
           <div class="flex items-center flex-1">
