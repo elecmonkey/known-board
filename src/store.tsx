@@ -20,6 +20,7 @@ export const AppContext = createContext<{
   importData: (data: AppState) => void;
   toggleTaskCompletion: (id: string, showToast?: (message: string, onUndo: () => void) => void) => void;
   toggleTaskSetHidden: (id: string, showToast?: (message: string, onUndo: () => void) => void) => void;
+  batchRenameEpisodes: (taskId: string, names: string[], showToast?: (message: string, onUndo: () => void) => void) => void;
 }>();
 
 export function AppProvider(props: { children: JSX.Element }) {
@@ -154,6 +155,38 @@ export function AppProvider(props: { children: JSX.Element }) {
     }
   };
 
+  const batchRenameEpisodes = (taskId: string, names: string[], showToast?: (message: string, onUndo: () => void) => void) => {
+    const currentState = state();
+    const task = currentState.tasks.find(t => t.id === taskId);
+    
+    if (!task || !task.episodes.length) return;
+    
+    // 保存原始的分集标题用于撤销
+    const originalEpisodes = task.episodes.map(ep => ({ ...ep }));
+    
+    // 创建新的分集数组，只更新有对应名称的分集
+    const updatedEpisodes = task.episodes.map((episode, index) => {
+      if (index < names.length && names[index]) {
+        return { ...episode, title: names[index] };
+      }
+      return episode;
+    });
+    
+    // 更新任务的分集
+    updateTask(taskId, { episodes: updatedEpisodes });
+    
+    // 显示撤销提示
+    if (showToast) {
+      const renamedCount = Math.min(names.length, task.episodes.length);
+      const message = `已批量重命名 ${renamedCount} 个分集`;
+      
+      showToast(message, () => {
+        // 撤销操作：恢复原始的分集标题
+        updateTask(taskId, { episodes: originalEpisodes });
+      });
+    }
+  };
+
   return (
     <AppContext.Provider 
       value={{
@@ -171,7 +204,8 @@ export function AppProvider(props: { children: JSX.Element }) {
         deleteTaskSet,
         importData,
         toggleTaskCompletion,
-        toggleTaskSetHidden
+        toggleTaskSetHidden,
+        batchRenameEpisodes
       }}
     >
       {props.children}

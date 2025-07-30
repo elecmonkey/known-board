@@ -2,6 +2,7 @@ import { createSignal, For, Show, createMemo } from 'solid-js';
 import { Task, Episode } from '../types';
 import { useApp } from '../store';
 import { useToast } from './Toast';
+import BatchRenameModal from './BatchRenameModal';
 import EditIcon from './icons/EditIcon';
 import DeleteIcon from './icons/DeleteIcon';
 import PlusIcon from './icons/PlusIcon';
@@ -23,8 +24,9 @@ export default function TaskItem(props: TaskItemProps) {
   const [editDeadline, setEditDeadline] = createSignal(props.task.deadline || '');
   const [editVideoUrl, setEditVideoUrl] = createSignal(props.task.videoUrl || '');
   const [batchCount, setBatchCount] = createSignal(1);
+  const [showBatchRenameModal, setShowBatchRenameModal] = createSignal(false);
   
-  const { updateTask, deleteTask, toggleTaskCompletion } = useApp();
+  const { updateTask, deleteTask, toggleTaskCompletion, batchRenameEpisodes } = useApp();
   const { showUndoToast } = useToast();
   const depth = props.depth || 0;
   
@@ -134,6 +136,10 @@ export default function TaskItem(props: TaskItemProps) {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('zh-CN');
+  };
+
+  const handleBatchRename = (names: string[]) => {
+    batchRenameEpisodes(props.task.id, names, showUndoToast);
   };
 
   return (
@@ -340,6 +346,16 @@ export default function TaskItem(props: TaskItemProps) {
                     批量创建
                   </button>
                 </div>
+                <Show when={props.task.episodes.length > 0}>
+                  <span class="text-gray-300">|</span>
+                  <button
+                    onClick={() => setShowBatchRenameModal(true)}
+                    class="text-xs text-purple-600 hover:text-purple-800 flex items-center"
+                  >
+                    <EditIcon class="w-3 h-3 mr-1" />
+                    批量命名
+                  </button>
+                </Show>
               </div>
             </div>
             
@@ -403,6 +419,17 @@ export default function TaskItem(props: TaskItemProps) {
           </div>
         </Show>
       </div>
+      
+      {/* 批量命名弹窗 */}
+      <Show when={showBatchRenameModal()}>
+        <BatchRenameModal
+          isOpen={true}
+          onClose={() => setShowBatchRenameModal(false)}
+          onConfirm={handleBatchRename}
+          episodeCount={props.task.episodes.length}
+          episodes={props.task.episodes}
+        />
+      </Show>
     </div>
   );
 }
