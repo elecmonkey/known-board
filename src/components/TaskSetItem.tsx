@@ -25,18 +25,9 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   const [editTitle, setEditTitle] = createSignal(props.taskSet.title);
   const [editDescription, setEditDescription] = createSignal(props.taskSet.description || '');
   
-  const { state, updateTaskSet, deleteTaskSet, addTaskToSet, addTaskSetToSet, toggleTaskSetHidden } = useApp();
+  const { state, updateTaskSet, deleteTaskSet, addTaskToSet, addTaskSetToSet, toggleTaskSetHidden, currentView } = useApp();
   const { showUndoToast } = useToast();
   const depth = props.depth || 0;
-  
-  // 获取当前视图类型
-  const context = useContext(AppContext);
-  const currentView = context?.currentView || (() => 'pending');
-
-  // 如果在待办或已完成页面且TaskSet被隐藏，则不渲染
-  if (props.taskSet.hidden && (currentView() === 'pending' || currentView() === 'completed')) {
-    return null;
-  }
 
   const handleSave = () => {
     updateTaskSet(props.taskSet.id, {
@@ -119,10 +110,11 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   };
 
   return (
-    <div style={`margin-left: ${depth * 20}px`}>
-      <div class={`py-3 ${
-        props.taskSet.hidden && currentView() === 'all' ? 'opacity-50' : ''
-      }`}>
+    <Show when={!props.taskSet.hidden || currentView() === 'all'}>
+      <div style={`margin-left: ${depth * 20}px`}>
+        <div class={`py-3 ${
+          props.taskSet.hidden && currentView() === 'all' ? 'opacity-50' : ''
+        }`}>
         <div class="flex items-center justify-between">
           <div class="flex items-center flex-1">
             <button
@@ -252,5 +244,6 @@ export default function TaskSetItem(props: TaskSetItemProps) {
         )}
       </div>
     </div>
+    </Show>
   );
 }
