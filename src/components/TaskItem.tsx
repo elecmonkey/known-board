@@ -285,8 +285,8 @@ export default function TaskItem(props: TaskItemProps) {
           </div>
         </div>
         
-        {/* 当showEpisodes为true或者episodes数量发生变化时保持展开 */}
-        {(showEpisodes() || episodesCount() > 0) && (
+        {/* 当showEpisodes为true时展开 */}
+        {showEpisodes() && (
           <div class="mt-4 pl-2 border-l-2 border-gray-200 space-y-2">
             <div class="flex justify-between items-center">
               <h4 class="font-medium text-gray-700">分集列表</h4>

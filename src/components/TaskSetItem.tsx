@@ -9,7 +9,7 @@ interface TaskSetItemProps {
 }
 
 export default function TaskSetItem(props: TaskSetItemProps) {
-  const [isExpanded, setIsExpanded] = createSignal(false);
+  const [isExpanded, setIsExpanded] = createSignal(true);
   const [isEditing, setIsEditing] = createSignal(false);
   const [showAddForm, setShowAddForm] = createSignal(false);
   const [addType, setAddType] = createSignal<'task' | 'taskset'>('task');
