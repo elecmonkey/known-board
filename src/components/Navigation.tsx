@@ -68,7 +68,7 @@ export default function Navigation() {
         {/* 移动端两行布局 */}
         <div class="sm:hidden">
           <div class="flex justify-center py-3">
-            <h1 class="text-xl font-bold text-gray-900">Known Board</h1>
+            <h1 class="text-xl font-bold text-gray-900">Known Board 网课看板</h1>
           </div>
           <div class="flex border-t border-gray-200 relative">
             {/* 滑动指示器 */}
@@ -101,7 +101,7 @@ export default function Navigation() {
         {/* 桌面端单行布局 */}
         <div class="hidden sm:flex justify-between h-16 relative">
           <div class="flex items-center">
-            <h1 class="text-xl font-bold text-gray-900">Known Board</h1>
+            <h1 class="text-xl font-bold text-gray-900">Known Board 网课看板</h1>
           </div>
           <div class="flex items-center">
             <div class="flex space-x-1">
