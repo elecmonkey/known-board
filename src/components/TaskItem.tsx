@@ -1,4 +1,4 @@
-import { createSignal, For } from 'solid-js';
+import { createSignal, For, createMemo } from 'solid-js';
 import { Task, Episode } from '../types';
 import { useApp } from '../store';
 
@@ -19,6 +19,9 @@ export default function TaskItem(props: TaskItemProps) {
   
   const { updateTask, deleteTask } = useApp();
   const depth = props.depth || 0;
+  
+  // 创建一个记忆化的episodes计数，用于检测episodes变化
+  const episodesCount = createMemo(() => props.task.episodes.length);
 
   const handleSave = () => {
     updateTask(props.task.id, {
@@ -59,6 +62,8 @@ export default function TaskItem(props: TaskItemProps) {
     updateTask(props.task.id, {
       episodes: [...props.task.episodes, newEpisode]
     });
+    // 确保添加分集后保持分集展开状态
+    setShowEpisodes(true);
   };
 
   const addBatchEpisodes = () => {
@@ -80,6 +85,8 @@ export default function TaskItem(props: TaskItemProps) {
     });
     
     setBatchCount(1);
+    // 确保批量添加分集后保持分集展开状态
+    setShowEpisodes(true);
   };
 
   const updateEpisode = (id: string, updates: Partial<Episode>) => {
@@ -87,6 +94,8 @@ export default function TaskItem(props: TaskItemProps) {
       episode.id === id ? { ...episode, ...updates } : episode
     );
     updateTask(props.task.id, { episodes: updatedEpisodes });
+    // 确保更新分集后保持分集展开状态
+    setShowEpisodes(true);
   };
 
   const deleteEpisode = (id: string) => {
@@ -97,6 +106,8 @@ export default function TaskItem(props: TaskItemProps) {
       number: index + 1
     }));
     updateTask(props.task.id, { episodes: renumberedEpisodes });
+    // 确保删除分集后保持分集展开状态
+    setShowEpisodes(true);
   };
 
   const formatDate = (dateString?: string) => {
@@ -274,7 +285,8 @@ export default function TaskItem(props: TaskItemProps) {
           </div>
         </div>
         
-        {showEpisodes() && (
+        {/* 当showEpisodes为true或者episodes数量发生变化时保持展开 */}
+        {(showEpisodes() || episodesCount() > 0) && (
           <div class="mt-4 pl-2 border-l-2 border-gray-200 space-y-2">
             <div class="flex justify-between items-center">
               <h4 class="font-medium text-gray-700">分集列表</h4>
