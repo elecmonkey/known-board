@@ -3,6 +3,7 @@ import { TaskSet, Task } from '../types';
 import { useApp } from '../store';
 import TaskItem from './TaskItem';
 import AddIcon from './icons/AddIcon';
+import AddItemForm from './AddItemForm';
 import EditIcon from './icons/EditIcon';
 import HideIcon from './icons/HideIcon';
 import ShowIcon from './icons/ShowIcon';
@@ -18,11 +19,8 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   const [isExpanded, setIsExpanded] = createSignal(true);
   const [isEditing, setIsEditing] = createSignal(false);
   const [showAddForm, setShowAddForm] = createSignal(false);
-  const [addType, setAddType] = createSignal<'task' | 'taskset'>('task');
   const [editTitle, setEditTitle] = createSignal(props.taskSet.title);
   const [editDescription, setEditDescription] = createSignal(props.taskSet.description || '');
-  const [newTitle, setNewTitle] = createSignal('');
-  const [newDescription, setNewDescription] = createSignal('');
   
   const { state, updateTaskSet, deleteTaskSet, addTaskToSet, addTaskSetToSet } = useApp();
   const depth = props.depth || 0;
@@ -61,14 +59,12 @@ export default function TaskSetItem(props: TaskSetItemProps) {
     return state().tasks.filter(task => task.parentId === props.taskSet.id);
   };
 
-  const handleAdd = () => {
-    if (!newTitle()) return;
-
-    if (addType() === 'task') {
+  const handleAdd = (type: 'task' | 'taskset', title: string, description?: string) => {
+    if (type === 'task') {
       const newTask: Task = {
         id: crypto.randomUUID(),
-        title: newTitle(),
-        description: newDescription() || undefined,
+        title,
+        description,
         completed: false,
         episodes: []
       };
@@ -76,21 +72,16 @@ export default function TaskSetItem(props: TaskSetItemProps) {
     } else {
       const newTaskSet: TaskSet = {
         id: crypto.randomUUID(),
-        title: newTitle(),
-        description: newDescription() || undefined,
+        title,
+        description,
         hidden: false
       };
       addTaskSetToSet(props.taskSet.id, newTaskSet);
     }
-
-    setNewTitle('');
-    setNewDescription('');
     setShowAddForm(false);
   };
 
   const handleAddCancel = () => {
-    setNewTitle('');
-    setNewDescription('');
     setShowAddForm(false);
   };
 
@@ -193,69 +184,11 @@ export default function TaskSetItem(props: TaskSetItemProps) {
         </div>
         
         {showAddForm() && (
-          <div class="mt-4 p-4 bg-gray-50">
-            <h3 class="text-lg font-medium text-gray-900 mb-3">添加到任务集</h3>
-            
-            <div class="space-y-4">
-              <div class="flex space-x-4">
-                <label class="flex items-center">
-                  <input
-                    type="radio"
-                    name="type"
-                    checked={addType() === 'task'}
-                    onChange={() => setAddType('task')}
-                    class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                  />
-                  任务
-                </label>
-                <label class="flex items-center">
-                  <input
-                    type="radio"
-                    name="type"
-                    checked={addType() === 'taskset'}
-                    onChange={() => setAddType('taskset')}
-                    class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                  />
-                  任务集
-                </label>
-              </div>
-              
-              <div>
-                <input
-                  type="text"
-                  value={newTitle()}
-                  onInput={(e) => setNewTitle(e.target.value)}
-                  class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={addType() === 'task' ? '任务标题' : '任务集标题'}
-                />
-              </div>
-              
-              <div>
-                <textarea
-                  value={newDescription()}
-                  onInput={(e) => setNewDescription(e.target.value)}
-                  class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                  rows="2"
-                  placeholder="描述（可选）"
-                />
-              </div>
-              
-              <div class="flex space-x-3">
-                <button
-                  onClick={handleAdd}
-                  class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  添加
-                </button>
-                <button
-                  onClick={handleAddCancel}
-                  class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                >
-                  取消
-                </button>
-              </div>
-            </div>
-          </div>
+          <AddItemForm
+            onAdd={handleAdd}
+            onCancel={handleAddCancel}
+            title="添加到任务集"
+          />
         )}
         
         {isExpanded() && (childTaskSets().length > 0 || childTasks().length > 0) && (
