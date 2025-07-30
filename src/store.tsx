@@ -18,6 +18,7 @@ export const AppContext = createContext<{
   deleteTask: (id: string) => void;
   deleteTaskSet: (id: string) => void;
   importData: (data: AppState) => void;
+  toggleTaskCompletion: (id: string, showToast?: (message: string, onUndo: () => void) => void) => void;
 }>();
 
 export function AppProvider(props: { children: JSX.Element }) {
@@ -102,6 +103,31 @@ export function AppProvider(props: { children: JSX.Element }) {
     // 由于createEffect会自动触发保存，这里不需要手动调用saveToStorage
   };
 
+  const toggleTaskCompletion = (id: string, showToast?: (message: string, onUndo: () => void) => void) => {
+    const currentState = state();
+    const task = currentState.tasks.find(t => t.id === id);
+    
+    if (!task) return;
+    
+    const previousCompleted = task.completed;
+    const newCompleted = !previousCompleted;
+    
+    // 立即更新任务状态
+    updateTask(id, { completed: newCompleted });
+    
+    // 显示撤销提示
+    if (showToast) {
+      const message = newCompleted 
+        ? `已完成「${task.title}」` 
+        : `已移至待办「${task.title}」`;
+        
+      showToast(message, () => {
+        // 撤销操作：恢复之前的完成状态
+        updateTask(id, { completed: previousCompleted });
+      });
+    }
+  };
+
   return (
     <AppContext.Provider 
       value={{
@@ -117,7 +143,8 @@ export function AppProvider(props: { children: JSX.Element }) {
         updateTaskSet,
         deleteTask,
         deleteTaskSet,
-        importData
+        importData,
+        toggleTaskCompletion
       }}
     >
       {props.children}

@@ -1,6 +1,7 @@
 import { createSignal, For, Show, createMemo } from 'solid-js';
 import { Task, Episode } from '../types';
 import { useApp } from '../store';
+import { useToast } from './Toast';
 import EditIcon from './icons/EditIcon';
 import DeleteIcon from './icons/DeleteIcon';
 import PlusIcon from './icons/PlusIcon';
@@ -23,7 +24,8 @@ export default function TaskItem(props: TaskItemProps) {
   const [editVideoUrl, setEditVideoUrl] = createSignal(props.task.videoUrl || '');
   const [batchCount, setBatchCount] = createSignal(1);
   
-  const { updateTask, deleteTask } = useApp();
+  const { updateTask, deleteTask, toggleTaskCompletion } = useApp();
+  const { showUndoToast } = useToast();
   const depth = props.depth || 0;
   
   // 在组件挂载时从Map中恢复展开状态
@@ -58,7 +60,7 @@ export default function TaskItem(props: TaskItemProps) {
   };
 
   const toggleCompleted = () => {
-    updateTask(props.task.id, { completed: !props.task.completed });
+    toggleTaskCompletion(props.task.id, showUndoToast);
   };
 
   const handleDelete = () => {
