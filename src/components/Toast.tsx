@@ -60,7 +60,6 @@ export function ToastProvider(props: { children: JSX.Element }) {
       <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
         {toasts().map(toast => (
           <div
-            key={toast.id}
             class={`
               flex items-center justify-between px-4 py-2 rounded-lg shadow-lg
               max-w-sm w-full

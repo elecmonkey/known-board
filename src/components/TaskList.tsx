@@ -1,4 +1,5 @@
 import { For, Show } from 'solid-js';
+import { Key } from '@solid-primitives/keyed';
 import TaskSetItem from './TaskSetItem';
 import TaskItem from './TaskItem';
 import Divider from './Divider';
@@ -28,16 +29,16 @@ export default function TaskList(props: TaskListProps) {
         )}
       </For>
       
-      <For each={props.tasks}>
+      <Key each={props.tasks} by={(task) => task.id}>
         {(task, index) => (
           <>
-            <TaskItem task={task} />
+            <TaskItem task={task()} />
             <Show when={index() < props.tasks.length - 1}>
               <Divider class="my-2" />
             </Show>
           </>
         )}
-      </For>
+      </Key>
       
       {props.tasks.length === 0 && props.taskSets.length === 0 && (
         <div class="text-center py-12">

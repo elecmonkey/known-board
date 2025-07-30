@@ -1,4 +1,5 @@
 import { createSignal, For, Show, useContext } from 'solid-js';
+import { Key } from '@solid-primitives/keyed';
 import { TaskSet, Task } from '../types';
 import { useApp } from '../store';
 import { useToast } from './Toast';
@@ -237,16 +238,16 @@ export default function TaskSetItem(props: TaskSetItemProps) {
               )}
             </For>
             
-            <For each={childTasks()}>
+            <Key each={childTasks()} by={(task) => task.id}>
               {(task, index) => (
                 <>
-                  <TaskItem task={task} depth={depth + 1} />
+                  <TaskItem task={task()} depth={depth + 1} />
                   <Show when={index() < childTasks().length - 1}>
                     <Divider class="my-1 mx-4" />
                   </Show>
                 </>
               )}
-            </For>
+            </Key>
           </div>
         )}
       </div>
