@@ -50,18 +50,18 @@ export default function TaskSetItem(props: TaskSetItemProps) {
     }
   };
 
+  // 获取属于当前任务集的所有任务集
+  const childTaskSets = () => {
+    return state().taskSets.filter(taskSet => taskSet.parentId === props.taskSet.id);
+  };
+
   // 获取属于当前任务集的所有任务
   const childTasks = () => {
     return state().tasks.filter(task => task.parentId === props.taskSet.id);
   };
 
-  // 获取属于当前任务集的所有子任务集
-  const childTaskSets = () => {
-    return state().taskSets.filter(taskSet => taskSet.parentId === props.taskSet.id);
-  };
-
   const handleAdd = () => {
-    if (!newTitle().trim()) return;
+    if (!newTitle()) return;
 
     if (addType() === 'task') {
       const newTask: Task = {
@@ -94,8 +94,8 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   };
 
   return (
-    <div style={`margin-left: ${depth * 12}px`}>
-      <div class={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-2 ${
+    <div style={`margin-left: ${depth * 20}px`}>
+      <div class={`py-3 ${
         props.taskSet.hidden ? 'opacity-50' : ''
       }`}>
         <div class="flex items-center justify-between">
@@ -139,15 +139,19 @@ export default function TaskSetItem(props: TaskSetItemProps) {
               <>
                 <button
                   onClick={handleSave}
-                  class="text-green-600 hover:text-green-800 text-sm"
+                  class="text-green-600 hover:text-green-800 p-1"
                 >
-                  保存
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
                 </button>
                 <button
                   onClick={handleCancel}
-                  class="text-gray-600 hover:text-gray-800 text-sm"
+                  class="text-gray-600 hover:text-gray-800 p-1"
                 >
-                  取消
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
                 </button>
               </>
             ) : (
@@ -188,7 +192,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
         </div>
         
         {showAddForm() && (
-          <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+          <div class="mt-4 p-4 bg-gray-50">
             <h3 class="text-lg font-medium text-gray-900 mb-3">添加到任务集</h3>
             
             <div class="space-y-4">
@@ -220,7 +224,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
                   type="text"
                   value={newTitle()}
                   onInput={(e) => setNewTitle(e.target.value)}
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder={addType() === 'task' ? '任务标题' : '任务集标题'}
                 />
               </div>
@@ -229,7 +233,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
                 <textarea
                   value={newDescription()}
                   onInput={(e) => setNewDescription(e.target.value)}
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  class="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                   rows="2"
                   placeholder="描述（可选）"
                 />
@@ -238,13 +242,13 @@ export default function TaskSetItem(props: TaskSetItemProps) {
               <div class="flex space-x-3">
                 <button
                   onClick={handleAdd}
-                  class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   添加
                 </button>
                 <button
                   onClick={handleAddCancel}
-                  class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  class="px-4 py-2 bg-gray-300 text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
                 >
                   取消
                 </button>
@@ -254,7 +258,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
         )}
         
         {isExpanded() && (childTaskSets().length > 0 || childTasks().length > 0) && (
-          <div class="mt-4 border-l-2 border-gray-200 space-y-2">
+          <div class="mt-2 space-y-0">
             <For each={childTaskSets()}>
               {(childTaskSet) => <TaskSetItem taskSet={childTaskSet} depth={depth + 1} />}
             </For>

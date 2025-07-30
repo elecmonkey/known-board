@@ -120,9 +120,9 @@ export default function TaskItem(props: TaskItemProps) {
   };
 
   return (
-    <div style={`margin-left: ${depth * 12}px`}>
-      <div class={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-2 ${
-        props.task.completed ? 'bg-green-50 border-green-200' : ''
+    <div style={`margin-left: ${depth * 20}px`}>
+      <div class={`py-3 ${
+        props.task.completed ? 'bg-green-50' : ''
       }`}>
         <div class="flex items-start">
           <button
@@ -287,7 +287,6 @@ export default function TaskItem(props: TaskItemProps) {
                     </div>
                   </div>
                 )}
-
               </div>
             )}
           </div>
@@ -295,7 +294,7 @@ export default function TaskItem(props: TaskItemProps) {
         
         {/* 当showEpisodes为true时展开 */}
         {showEpisodes() && (
-          <div class="mt-4 pl-2 border-l-2 border-gray-200 space-y-2">
+          <div class="mt-4 pl-4 border-l-2 border-gray-200 space-y-2">
             <div class="flex justify-between items-center">
               <h4 class="font-medium text-gray-700">分集列表</h4>
               <div class="flex space-x-2">
