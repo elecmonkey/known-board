@@ -1,7 +1,6 @@
-import { For, createSignal } from 'solid-js';
+import { createSignal } from 'solid-js';
 import { useApp } from '../store';
-import TaskSetItem from '../components/TaskSetItem';
-import TaskItem from '../components/TaskItem';
+import TaskList from '../components/TaskList';
 import { Task, TaskSet } from '../types';
 
 export default function AllTasksPage() {
@@ -129,23 +128,15 @@ export default function AllTasksPage() {
         </div>
       )}
 
-      <div>
-        <For each={filteredData().taskSets}>
-          {(taskSet) => <TaskSetItem taskSet={taskSet} />}
-        </For>
-        
-        <For each={filteredData().tasks}>
-          {(task) => <TaskItem task={task} />}
-        </For>
-        
-        {filteredData().tasks.length === 0 && filteredData().taskSets.length === 0 && (
-          <div class="text-center py-12">
-            <div class="text-gray-400 text-6xl mb-4">📚</div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">暂无任务</h3>
-            <p class="text-gray-500">点击上方"添加项目"按钮开始创建任务或任务集</p>
-          </div>
-        )}
-      </div>
+      <TaskList 
+        tasks={filteredData().tasks} 
+        taskSets={filteredData().taskSets}
+        emptyState={{
+          icon: '📚',
+          title: '暂无任务',
+          description: '点击上方"添加项目"按钮开始创建任务或任务集'
+        }}
+      />
     </div>
   );
 }

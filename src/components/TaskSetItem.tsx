@@ -1,4 +1,4 @@
-import { createSignal, For } from 'solid-js';
+import { createSignal, For, Show } from 'solid-js';
 import { TaskSet, Task } from '../types';
 import { useApp } from '../store';
 import TaskItem from './TaskItem';
@@ -7,6 +7,7 @@ import EditIcon from './icons/EditIcon';
 import HideIcon from './icons/HideIcon';
 import ShowIcon from './icons/ShowIcon';
 import DeleteIcon from './icons/DeleteIcon';
+import Divider from './Divider';
 
 interface TaskSetItemProps {
   taskSet: TaskSet;
@@ -259,12 +260,27 @@ export default function TaskSetItem(props: TaskSetItemProps) {
         
         {isExpanded() && (childTaskSets().length > 0 || childTasks().length > 0) && (
           <div class="mt-2 space-y-0">
+            <Divider class="my-1" />
             <For each={childTaskSets()}>
-              {(childTaskSet) => <TaskSetItem taskSet={childTaskSet} depth={depth + 1} />}
+              {(childTaskSet, index) => (
+                <>
+                  <TaskSetItem taskSet={childTaskSet} depth={depth + 1} />
+                  <Show when={index() < childTaskSets().length - 1 || childTasks().length > 0}>
+                    <Divider class="my-1 mx-4" />
+                  </Show>
+                </>
+              )}
             </For>
             
             <For each={childTasks()}>
-              {(task) => <TaskItem task={task} depth={depth + 1} />}
+              {(task, index) => (
+                <>
+                  <TaskItem task={task} depth={depth + 1} />
+                  <Show when={index() < childTasks().length - 1}>
+                    <Divider class="my-1 mx-4" />
+                  </Show>
+                </>
+              )}
             </For>
           </div>
         )}

@@ -1,9 +1,13 @@
-import { createSignal, For, createMemo } from 'solid-js';
+import { createSignal, For, Show, createMemo } from 'solid-js';
 import { Task, Episode } from '../types';
 import { useApp } from '../store';
 import EditIcon from './icons/EditIcon';
 import DeleteIcon from './icons/DeleteIcon';
 import PlusIcon from './icons/PlusIcon';
+import Divider from './Divider';
+
+// 使用Map来存储每个任务的展开状态，避免组件重新渲染时丢失
+const episodeVisibilityMap = new Map<string, boolean>();
 
 interface TaskItemProps {
   task: Task;
@@ -13,7 +17,6 @@ interface TaskItemProps {
 export default function TaskItem(props: TaskItemProps) {
   const [isExpanded, setIsExpanded] = createSignal(false);
   const [isEditing, setIsEditing] = createSignal(false);
-  const [showEpisodes, setShowEpisodes] = createSignal(false);
   const [editTitle, setEditTitle] = createSignal(props.task.title);
   const [editDescription, setEditDescription] = createSignal(props.task.description || '');
   const [editDeadline, setEditDeadline] = createSignal(props.task.deadline || '');
@@ -22,6 +25,16 @@ export default function TaskItem(props: TaskItemProps) {
   
   const { updateTask, deleteTask } = useApp();
   const depth = props.depth || 0;
+  
+  // 在组件挂载时从Map中恢复展开状态
+  const [showEpisodes, setShowEpisodes] = createSignal(episodeVisibilityMap.get(props.task.id) || false);
+  
+  // 更新Map中的状态
+  const updateShowEpisodes = (value: boolean | ((prev: boolean) => boolean)) => {
+    const newValue = typeof value === 'function' ? value(showEpisodes()) : value;
+    setShowEpisodes(newValue);
+    episodeVisibilityMap.set(props.task.id, newValue);
+  };
   
   // 创建一个记忆化的episodes计数，用于检测episodes变化
   const episodesCount = createMemo(() => props.task.episodes.length);
@@ -54,6 +67,10 @@ export default function TaskItem(props: TaskItemProps) {
     }
   };
 
+  const toggleEpisodes = () => {
+    updateShowEpisodes(prev => !prev);
+  };
+
   const addEpisode = () => {
     const newEpisode: Episode = {
       id: crypto.randomUUID(),
@@ -65,8 +82,8 @@ export default function TaskItem(props: TaskItemProps) {
     updateTask(props.task.id, {
       episodes: [...props.task.episodes, newEpisode]
     });
-    // 确保添加分集后保持分集展开状态
-    setShowEpisodes(true);
+    // 添加分集后自动展开
+    updateShowEpisodes(true);
   };
 
   const addBatchEpisodes = () => {
@@ -88,8 +105,8 @@ export default function TaskItem(props: TaskItemProps) {
     });
     
     setBatchCount(1);
-    // 确保批量添加分集后保持分集展开状态
-    setShowEpisodes(true);
+    // 批量添加分集后自动展开
+    updateShowEpisodes(true);
   };
 
   const updateEpisode = (id: string, updates: Partial<Episode>) => {
@@ -97,8 +114,7 @@ export default function TaskItem(props: TaskItemProps) {
       episode.id === id ? { ...episode, ...updates } : episode
     );
     updateTask(props.task.id, { episodes: updatedEpisodes });
-    // 确保更新分集后保持分集展开状态
-    setShowEpisodes(true);
+    // 更新分集时保持当前展开状态，不需要额外操作
   };
 
   const deleteEpisode = (id: string) => {
@@ -109,8 +125,7 @@ export default function TaskItem(props: TaskItemProps) {
       number: index + 1
     }));
     updateTask(props.task.id, { episodes: renumberedEpisodes });
-    // 确保删除分集后保持分集展开状态
-    setShowEpisodes(true);
+    // 删除分集时保持当前展开状态，不需要额外操作
   };
 
   const formatDate = (dateString?: string) => {
@@ -249,7 +264,7 @@ export default function TaskItem(props: TaskItemProps) {
                 {props.task.episodes.length > 0 && (
                   <div class="mt-3">
                     <button
-                      onClick={() => setShowEpisodes(!showEpisodes())}
+                      onClick={toggleEpisodes}
                       class="text-sm text-gray-600 hover:text-gray-800 flex items-center"
                     >
                       {showEpisodes() ? '收起分集' : '展开分集'} ({props.task.episodes.length})
@@ -293,7 +308,7 @@ export default function TaskItem(props: TaskItemProps) {
         </div>
         
         {/* 当showEpisodes为true时展开 */}
-        {showEpisodes() && (
+        <Show when={showEpisodes()}>
           <div class="mt-4 pl-4 border-l-2 border-gray-200 space-y-2">
             <div class="flex justify-between items-center">
               <h4 class="font-medium text-gray-700">分集列表</h4>
@@ -328,56 +343,63 @@ export default function TaskItem(props: TaskItemProps) {
             
             <div class="space-y-2 max-h-60 overflow-y-auto">
               <For each={props.task.episodes}>
-                {(episode) => (
-                  <div class={`flex items-center p-2 rounded ${
-                    episode.completed ? 'bg-green-50' : 'bg-gray-50'
-                  }`}>
-                    <button
-                      onClick={() => updateEpisode(episode.id, { completed: !episode.completed })}
-                      class={`flex-shrink-0 w-4 h-4 rounded border mr-2 flex items-center justify-center ${
-                        episode.completed 
-                          ? 'bg-green-500 border-green-500 text-white text-xs' 
-                          : 'border-gray-300 hover:border-green-400'
-                      }`}
-                    >
-                      {episode.completed && '✓'}
-                    </button>
-                    
-                    <span class={`text-sm flex-1 truncate ${
-                      episode.completed ? 'line-through text-gray-500' : 'text-gray-700'
+                {(episode, index) => (
+                  <>
+                    <div class={`flex items-center p-2 rounded ${
+                      episode.completed ? 'bg-green-50' : 'bg-gray-50'
                     }`}>
-                      {episode.number}. {episode.title || `第 ${episode.number} 集`}
-                    </span>
-                    
-                    <div class="flex space-x-1">
                       <button
-                        onClick={() => {
-                          const newTitle = prompt('输入新的分集标题:', episode.title || '');
-                          if (newTitle !== null) {
-                            updateEpisode(episode.id, { title: newTitle || undefined });
-                          }
-                        }}
-                        class="text-xs text-blue-600 hover:text-blue-800"
+                        onClick={() => updateEpisode(episode.id, { completed: !episode.completed })}
+                        class={`flex-shrink-0 w-4 h-4 rounded border mr-2 flex items-center justify-center ${
+                          episode.completed 
+                            ? 'bg-green-500 border-green-500 text-white text-xs' 
+                            : 'border-gray-300 hover:border-green-400'
+                        }`}
                       >
-                        编辑
+                        {episode.completed && '✓'}
                       </button>
-                      <button
-                        onClick={() => {
-                          if (confirm('确定要删除这个分集吗？')) {
-                            deleteEpisode(episode.id);
-                          }
-                        }}
-                        class="text-xs text-red-600 hover:text-red-800"
-                      >
-                        删除
-                      </button>
+                      
+                      <span class={`text-sm flex-1 truncate ${
+                        episode.completed ? 'line-through text-gray-500' : 'text-gray-700'
+                      }`}>
+                        {episode.number}. {episode.title || `第 ${episode.number} 集`}
+                      </span>
+                      
+                      <div class="flex space-x-1">
+                        <button
+                          onClick={() => {
+                            const newTitle = prompt('输入新的分集标题:', episode.title || '');
+                            if (newTitle !== null) {
+                              updateEpisode(episode.id, { title: newTitle || undefined });
+                            }
+                          }}
+                          class="text-blue-600 hover:text-blue-800 p-1"
+                          title="编辑"
+                        >
+                          <EditIcon class="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm('确定要删除这个分集吗？')) {
+                              deleteEpisode(episode.id);
+                            }
+                          }}
+                          class="text-red-600 hover:text-red-800 p-1"
+                          title="删除"
+                        >
+                          <DeleteIcon class="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                    <Show when={index() < props.task.episodes.length - 1}>
+                      <Divider class="my-1 mx-2" />
+                    </Show>
+                  </>
                 )}
               </For>
             </div>
           </div>
-        )}
+        </Show>
       </div>
     </div>
   );
