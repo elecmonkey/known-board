@@ -1,6 +1,7 @@
 import { createSignal, For, Show, useContext } from 'solid-js';
 import { TaskSet, Task } from '../types';
 import { useApp } from '../store';
+import { useToast } from './Toast';
 import TaskItem from './TaskItem';
 import AddIcon from './icons/AddIcon';
 import AddItemForm from './AddItemForm';
@@ -23,7 +24,8 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   const [editTitle, setEditTitle] = createSignal(props.taskSet.title);
   const [editDescription, setEditDescription] = createSignal(props.taskSet.description || '');
   
-  const { state, updateTaskSet, deleteTaskSet, addTaskToSet, addTaskSetToSet } = useApp();
+  const { state, updateTaskSet, deleteTaskSet, addTaskToSet, addTaskSetToSet, toggleTaskSetHidden } = useApp();
+  const { showUndoToast } = useToast();
   const depth = props.depth || 0;
   
   // 获取当前视图类型
@@ -50,7 +52,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   };
 
   const toggleHidden = () => {
-    updateTaskSet(props.taskSet.id, { hidden: !props.taskSet.hidden });
+    toggleTaskSetHidden(props.taskSet.id, showUndoToast);
   };
 
   const handleDelete = () => {

@@ -19,6 +19,7 @@ export const AppContext = createContext<{
   deleteTaskSet: (id: string) => void;
   importData: (data: AppState) => void;
   toggleTaskCompletion: (id: string, showToast?: (message: string, onUndo: () => void) => void) => void;
+  toggleTaskSetHidden: (id: string, showToast?: (message: string, onUndo: () => void) => void) => void;
 }>();
 
 export function AppProvider(props: { children: JSX.Element }) {
@@ -128,6 +129,31 @@ export function AppProvider(props: { children: JSX.Element }) {
     }
   };
 
+  const toggleTaskSetHidden = (id: string, showToast?: (message: string, onUndo: () => void) => void) => {
+    const currentState = state();
+    const taskSet = currentState.taskSets.find(ts => ts.id === id);
+    
+    if (!taskSet) return;
+    
+    const previousHidden = taskSet.hidden;
+    const newHidden = !previousHidden;
+    
+    // 立即更新TaskSet隐藏状态
+    updateTaskSet(id, { hidden: newHidden });
+    
+    // 显示撤销提示
+    if (showToast) {
+      const message = newHidden 
+        ? `已隐藏「${taskSet.title}」` 
+        : `已显示「${taskSet.title}」`;
+        
+      showToast(message, () => {
+        // 撤销操作：恢复之前的隐藏状态
+        updateTaskSet(id, { hidden: previousHidden });
+      });
+    }
+  };
+
   return (
     <AppContext.Provider 
       value={{
@@ -144,7 +170,8 @@ export function AppProvider(props: { children: JSX.Element }) {
         deleteTask,
         deleteTaskSet,
         importData,
-        toggleTaskCompletion
+        toggleTaskCompletion,
+        toggleTaskSetHidden
       }}
     >
       {props.children}
