@@ -23,6 +23,9 @@ export default function Navigation() {
         width: element.offsetWidth,
         left: element.offsetLeft
       });
+    } else {
+      // 如果不在导航项中，隐藏指示器
+      setIndicatorStyle({ width: 0, left: 0 });
     }
 
     // 桌面端指示器
@@ -33,6 +36,9 @@ export default function Navigation() {
         width: element.offsetWidth,
         left: element.offsetLeft
       });
+    } else {
+      // 如果不在导航项中，隐藏指示器
+      setDesktopIndicatorStyle({ width: 0, left: 0 });
     }
   };
 
