@@ -1,4 +1,4 @@
-import { createSignal, For, Show } from 'solid-js';
+import { createSignal, For, Show, useContext } from 'solid-js';
 import { TaskSet, Task } from '../types';
 import { useApp } from '../store';
 import TaskItem from './TaskItem';
@@ -9,6 +9,7 @@ import HideIcon from './icons/HideIcon';
 import ShowIcon from './icons/ShowIcon';
 import DeleteIcon from './icons/DeleteIcon';
 import Divider from './Divider';
+import { AppContext } from '../store';
 
 interface TaskSetItemProps {
   taskSet: TaskSet;
@@ -24,6 +25,10 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   
   const { state, updateTaskSet, deleteTaskSet, addTaskToSet, addTaskSetToSet } = useApp();
   const depth = props.depth || 0;
+  
+  // 获取当前视图类型
+  const context = useContext(AppContext);
+  const currentView = context?.currentView || (() => 'pending');
 
   const handleSave = () => {
     updateTaskSet(props.taskSet.id, {
@@ -54,9 +59,22 @@ export default function TaskSetItem(props: TaskSetItemProps) {
     return state().taskSets.filter(taskSet => taskSet.parentId === props.taskSet.id);
   };
 
-  // 获取属于当前任务集的所有任务
+  // 获取属于当前任务集的所有任务，并根据当前视图进行过滤
   const childTasks = () => {
-    return state().tasks.filter(task => task.parentId === props.taskSet.id);
+    const tasks = state().tasks.filter(task => task.parentId === props.taskSet.id);
+    
+    switch (currentView()) {
+      case 'pending':
+        // 待办页面只显示未完成的任务
+        return tasks.filter(task => !task.completed);
+      case 'completed':
+        // 已完成页面只显示已完成的任务
+        return tasks.filter(task => task.completed);
+      case 'all':
+      default:
+        // 所有任务页面显示所有任务
+        return tasks;
+    }
   };
 
   const handleAdd = (type: 'task' | 'taskset', title: string, description?: string) => {

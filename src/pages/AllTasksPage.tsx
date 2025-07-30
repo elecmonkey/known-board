@@ -1,12 +1,16 @@
-import { createSignal } from 'solid-js';
+import { createSignal, onMount } from 'solid-js';
 import { useApp } from '../store';
 import TaskList from '../components/TaskList';
 import AddItemForm from '../components/AddItemForm';
 import { Task, TaskSet } from '../types';
 
 export default function AllTasksPage() {
-  const { state, addTask, addTaskSet } = useApp();
+  const { state, addTask, addTaskSet, setCurrentView } = useApp();
   const [showAddForm, setShowAddForm] = createSignal(false);
+
+  onMount(() => {
+    setCurrentView('all');
+  });
 
   const filteredData = () => {
     return {

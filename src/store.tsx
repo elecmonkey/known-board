@@ -4,7 +4,7 @@ import { loadFromStorage, saveToStorage } from './utils/storage';
 
 const initialState: AppState = loadFromStorage();
 
-const AppContext = createContext<{
+export const AppContext = createContext<{
   state: () => AppState;
   setState: (newState: AppState) => void;
   currentView: () => ViewType;
