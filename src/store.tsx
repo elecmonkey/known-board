@@ -17,6 +17,7 @@ const AppContext = createContext<{
   updateTaskSet: (id: string, updates: Partial<TaskSet>) => void;
   deleteTask: (id: string) => void;
   deleteTaskSet: (id: string) => void;
+  importData: (data: AppState) => void;
 }>();
 
 export function AppProvider(props: { children: JSX.Element }) {
@@ -89,6 +90,10 @@ export function AppProvider(props: { children: JSX.Element }) {
       taskSets: prev.taskSets.filter(taskSet => taskSet.id !== id)
     }));
   };
+  
+  const importData = (data: AppState) => {
+    setState(data);
+  };
 
   return (
     <AppContext.Provider 
@@ -104,7 +109,8 @@ export function AppProvider(props: { children: JSX.Element }) {
         updateTask,
         updateTaskSet,
         deleteTask,
-        deleteTaskSet
+        deleteTaskSet,
+        importData
       }}
     >
       {props.children}
