@@ -3,6 +3,7 @@ import { useApp } from '../store';
 import TaskList from '../components/TaskList';
 import AddItemForm from '../components/AddItemForm';
 import { Task, TaskSet } from '../types';
+import { filterVisibleItems } from '../utils/filterUtils';
 
 export default function CompletedPage() {
   const { state, addTask, addTaskSet, setCurrentView } = useApp();
@@ -13,10 +14,8 @@ export default function CompletedPage() {
   });
 
   const filteredData = () => {
-    return {
-      tasks: state().tasks.filter(task => task.completed && !task.parentId),
-      taskSets: state().taskSets.filter(ts => !ts.hidden && !ts.parentId)
-    };
+    const { tasks, taskSets } = state();
+    return filterVisibleItems(tasks, taskSets, task => task.completed);
   };
 
   const handleAdd = (type: 'task' | 'taskset', title: string, description?: string) => {

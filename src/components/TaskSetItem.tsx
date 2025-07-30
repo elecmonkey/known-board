@@ -30,6 +30,11 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   const context = useContext(AppContext);
   const currentView = context?.currentView || (() => 'pending');
 
+  // 如果在待办或已完成页面且TaskSet被隐藏，则不渲染
+  if (props.taskSet.hidden && (currentView() === 'pending' || currentView() === 'completed')) {
+    return null;
+  }
+
   const handleSave = () => {
     updateTaskSet(props.taskSet.id, {
       title: editTitle(),
@@ -56,7 +61,14 @@ export default function TaskSetItem(props: TaskSetItemProps) {
 
   // 获取属于当前任务集的所有任务集
   const childTaskSets = () => {
-    return state().taskSets.filter(taskSet => taskSet.parentId === props.taskSet.id);
+    const childSets = state().taskSets.filter(taskSet => taskSet.parentId === props.taskSet.id);
+    
+    // 在待办和已完成页面中，过滤掉隐藏的子TaskSet
+    if (currentView() === 'pending' || currentView() === 'completed') {
+      return childSets.filter(taskSet => !taskSet.hidden);
+    }
+    
+    return childSets;
   };
 
   // 获取属于当前任务集的所有任务，并根据当前视图进行过滤
@@ -106,7 +118,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   return (
     <div style={`margin-left: ${depth * 20}px`}>
       <div class={`py-3 ${
-        props.taskSet.hidden ? 'opacity-50' : ''
+        props.taskSet.hidden && currentView() === 'all' ? 'opacity-50' : ''
       }`}>
         <div class="flex items-center justify-between">
           <div class="flex items-center flex-1">
