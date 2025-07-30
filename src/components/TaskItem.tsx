@@ -3,6 +3,7 @@ import { Task, Episode } from '../types';
 import { useApp } from '../store';
 import EditIcon from './icons/EditIcon';
 import DeleteIcon from './icons/DeleteIcon';
+import PlusIcon from './icons/PlusIcon';
 
 interface TaskItemProps {
   task: Task;
@@ -263,7 +264,8 @@ export default function TaskItem(props: TaskItemProps) {
                       onClick={addEpisode}
                       class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
                     >
-                      + 添加分集
+                      <PlusIcon class="w-4 h-4 mr-1" />
+                      添加分集
                     </button>
                     <span class="text-gray-300">|</span>
                     <div class="flex items-center space-x-2">
@@ -277,13 +279,15 @@ export default function TaskItem(props: TaskItemProps) {
                       />
                       <button
                         onClick={addBatchEpisodes}
-                        class="text-sm text-green-600 hover:text-green-800"
+                        class="text-sm text-green-600 hover:text-green-800 flex items-center"
                       >
+                        <PlusIcon class="w-4 h-4 mr-1" />
                         批量创建
                       </button>
                     </div>
                   </div>
                 )}
+
               </div>
             )}
           </div>
@@ -297,9 +301,10 @@ export default function TaskItem(props: TaskItemProps) {
               <div class="flex space-x-2">
                 <button
                   onClick={addEpisode}
-                  class="text-xs text-blue-600 hover:text-blue-800"
+                  class="text-xs text-blue-600 hover:text-blue-800 flex items-center"
                 >
-                  + 添加分集
+                  <PlusIcon class="w-3 h-3 mr-1" />
+                  添加分集
                 </button>
                 <span class="text-gray-300">|</span>
                 <div class="flex items-center space-x-1">
@@ -313,8 +318,9 @@ export default function TaskItem(props: TaskItemProps) {
                   />
                   <button
                     onClick={addBatchEpisodes}
-                    class="text-xs text-green-600 hover:text-green-800"
+                    class="text-xs text-green-600 hover:text-green-800 flex items-center"
                   >
+                    <PlusIcon class="w-3 h-3 mr-1" />
                     批量创建
                   </button>
                 </div>
