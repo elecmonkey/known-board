@@ -243,13 +243,13 @@ export default function TaskSetItem(props: TaskSetItemProps) {
               <div class="flex space-x-3">
                 <button
                   onClick={handleAdd}
-                  class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   添加
                 </button>
                 <button
                   onClick={handleAddCancel}
-                  class="px-4 py-2 bg-gray-300 text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
                 >
                   取消
                 </button>

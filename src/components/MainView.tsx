@@ -91,7 +91,7 @@ export default function MainView() {
       </div>
 
       {showAddForm() && (
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div class="p-6 bg-gray-50 rounded-lg">
           <h3 class="text-lg font-medium text-gray-900 mb-4">添加新项目</h3>
           
           <div class="space-y-4">
