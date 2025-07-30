@@ -117,7 +117,7 @@ export default function TaskItem(props: TaskItemProps) {
   };
 
   return (
-    <div style={`margin-left: ${depth * 16}px`}>
+    <div style={`margin-left: ${depth * 12}px`}>
       <div class={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-2 ${
         props.task.completed ? 'bg-green-50 border-green-200' : ''
       }`}>

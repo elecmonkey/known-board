@@ -89,7 +89,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   };
 
   return (
-    <div style={`margin-left: ${depth * 16}px`}>
+    <div style={`margin-left: ${depth * 12}px`}>
       <div class={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-2 ${
         props.taskSet.hidden ? 'opacity-50' : ''
       }`}>
@@ -245,7 +245,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
         )}
         
         {isExpanded() && (childTaskSets().length > 0 || childTasks().length > 0) && (
-          <div class="mt-4 border-l-2 border-gray-200 pl-4 space-y-2">
+          <div class="mt-4 border-l-2 border-gray-200 space-y-2">
             <For each={childTaskSets()}>
               {(childTaskSet) => <TaskSetItem taskSet={childTaskSet} depth={depth + 1} />}
             </For>
