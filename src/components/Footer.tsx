@@ -1,28 +1,35 @@
 import { A } from '@solidjs/router';
 import { useApp } from '../store';
+import { exportDataAsJson, importDataFromJson } from '../utils/importExport';
 
 export default function Footer() {
   const { state, importData } = useApp();
   
   const handleExport = () => {
-    const data = {
-      version: '1.0',
-      exportedAt: new Date().toISOString(),
-      data: {
-        tasks: state().tasks,
-        taskSets: state().taskSets
-      }
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `known-board-export-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      const data = {
+        version: '1.0',
+        exportedAt: new Date().toISOString(),
+        data: {
+          tasks: state().tasks,
+          taskSets: state().taskSets
+        }
+      };
+      
+      // 将时间精确到秒
+      const now = new Date();
+      const dateString = now.getFullYear() + 
+        '-' + String(now.getMonth() + 1).padStart(2, '0') + 
+        '-' + String(now.getDate()).padStart(2, '0') +
+        '-' + String(now.getHours()).padStart(2, '0') +
+        String(now.getMinutes()).padStart(2, '0') +
+        String(now.getSeconds()).padStart(2, '0');
+      
+      exportDataAsJson(data, `known-board-export-${dateString}.json`);
+    } catch (error) {
+      console.error('导出失败:', error);
+      alert(error instanceof Error ? error.message : '导出失败');
+    }
   };
   
   const handleImport = () => {
@@ -35,18 +42,7 @@ export default function Footer() {
       if (!file) return;
       
       try {
-        const content = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            resolve(e.target?.result as string);
-          };
-          reader.onerror = (e) => {
-            reject(new Error('读取文件失败'));
-          };
-          reader.readAsText(file);
-        });
-
-        const parsedData = JSON.parse(content);
+        const parsedData = await importDataFromJson(file);
         
         if (!parsedData.version || !parsedData.data) {
           alert('无效的文件格式');
@@ -63,7 +59,7 @@ export default function Footer() {
         alert('数据导入成功！');
       } catch (error) {
         console.error('导入失败:', error);
-        alert('文件解析失败: ' + (error instanceof Error ? error.message : '未知错误'));
+        alert(error instanceof Error ? error.message : '导入失败');
       }
     };
     
