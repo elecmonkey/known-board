@@ -2,6 +2,11 @@ import { createSignal, For } from 'solid-js';
 import { TaskSet, Task } from '../types';
 import { useApp } from '../store';
 import TaskItem from './TaskItem';
+import AddIcon from './icons/AddIcon';
+import EditIcon from './icons/EditIcon';
+import HideIcon from './icons/HideIcon';
+import ShowIcon from './icons/ShowIcon';
+import DeleteIcon from './icons/DeleteIcon';
 
 interface TaskSetItemProps {
   taskSet: TaskSet;
@@ -151,27 +156,31 @@ export default function TaskSetItem(props: TaskSetItemProps) {
                   onClick={() => {
                     setShowAddForm(true);
                   }}
-                  class="text-blue-600 hover:text-blue-800 text-sm"
+                  class="text-blue-600 hover:text-blue-800 p-1"
+                  title="添加"
                 >
-                  添加
+                  <AddIcon />
                 </button>
                 <button
                   onClick={() => setIsEditing(true)}
-                  class="text-blue-600 hover:text-blue-800 text-sm"
+                  class="text-blue-600 hover:text-blue-800 p-1"
+                  title="编辑"
                 >
-                  编辑
+                  <EditIcon />
                 </button>
                 <button
                   onClick={toggleHidden}
-                  class={`text-sm ${props.taskSet.hidden ? 'text-green-600 hover:text-green-800' : 'text-yellow-600 hover:text-yellow-800'}`}
+                  class={`p-1 ${props.taskSet.hidden ? 'text-green-600 hover:text-green-800' : 'text-yellow-600 hover:text-yellow-800'}`}
+                  title={props.taskSet.hidden ? '显示' : '隐藏'}
                 >
-                  {props.taskSet.hidden ? '显示' : '隐藏'}
+                  {props.taskSet.hidden ? <ShowIcon /> : <HideIcon />}
                 </button>
                 <button
                   onClick={handleDelete}
-                  class="text-red-600 hover:text-red-800 text-sm"
+                  class="text-red-600 hover:text-red-800 p-1"
+                  title="删除"
                 >
-                  删除
+                  <DeleteIcon />
                 </button>
               </>
             )}

@@ -1,6 +1,8 @@
 import { createSignal, For, createMemo } from 'solid-js';
 import { Task, Episode } from '../types';
 import { useApp } from '../store';
+import EditIcon from './icons/EditIcon';
+import DeleteIcon from './icons/DeleteIcon';
 
 interface TaskItemProps {
   task: Task;
@@ -228,15 +230,17 @@ export default function TaskItem(props: TaskItemProps) {
                   <div class="flex space-x-1">
                     <button
                       onClick={() => setIsEditing(true)}
-                      class="text-blue-600 hover:text-blue-800 text-sm"
+                      class="text-blue-600 hover:text-blue-800 p-1"
+                      title="编辑"
                     >
-                      编辑
+                      <EditIcon />
                     </button>
                     <button
                       onClick={handleDelete}
-                      class="text-red-600 hover:text-red-800 text-sm"
+                      class="text-red-600 hover:text-red-800 p-1"
+                      title="删除"
                     >
-                      删除
+                      <DeleteIcon />
                     </button>
                   </div>
                 </div>
