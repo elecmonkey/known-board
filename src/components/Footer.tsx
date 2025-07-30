@@ -30,29 +30,41 @@ export default function Footer() {
     input.type = 'file';
     input.accept = '.json';
     
-    input.onchange = (event) => {
+    input.onchange = async (event) => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (!file) return;
       
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const content = e.target?.result as string;
-          const parsedData = JSON.parse(content);
-          
-          if (!parsedData.version || !parsedData.data) {
-            alert('无效的文件格式');
-            return;
-          }
-          
-          importData(parsedData.data);
-          alert('数据导入成功！');
-        } catch (error) {
-          alert('文件解析失败: ' + (error instanceof Error ? error.message : '未知错误'));
+      try {
+        const content = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(e.target?.result as string);
+          };
+          reader.onerror = (e) => {
+            reject(new Error('读取文件失败'));
+          };
+          reader.readAsText(file);
+        });
+
+        const parsedData = JSON.parse(content);
+        
+        if (!parsedData.version || !parsedData.data) {
+          alert('无效的文件格式');
+          return;
         }
-      };
-      
-      reader.readAsText(file);
+        
+        // 验证数据结构
+        if (!Array.isArray(parsedData.data.tasks) || !Array.isArray(parsedData.data.taskSets)) {
+          alert('数据格式不正确');
+          return;
+        }
+        
+        importData(parsedData.data);
+        alert('数据导入成功！');
+      } catch (error) {
+        console.error('导入失败:', error);
+        alert('文件解析失败: ' + (error instanceof Error ? error.message : '未知错误'));
+      }
     };
     
     input.click();

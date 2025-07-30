@@ -92,7 +92,14 @@ export function AppProvider(props: { children: JSX.Element }) {
   };
   
   const importData = (data: AppState) => {
-    setState(data);
+    // 确保数据结构正确
+    const validatedData: AppState = {
+      taskSets: Array.isArray(data.taskSets) ? data.taskSets : [],
+      tasks: Array.isArray(data.tasks) ? data.tasks : []
+    };
+    
+    setState(validatedData);
+    // 由于createEffect会自动触发保存，这里不需要手动调用saveToStorage
   };
 
   return (
