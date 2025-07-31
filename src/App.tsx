@@ -9,6 +9,7 @@ const PendingPage = lazy(() => import('./pages/PendingPage'));
 const CompletedPage = lazy(() => import('./pages/CompletedPage'));
 const AllTasksPage = lazy(() => import('./pages/AllTasksPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
+const GuidePage = lazy(() => import('./pages/GuidePage'));
 
 const App: Component = () => {
   return (
@@ -19,6 +20,7 @@ const App: Component = () => {
           <Route path="/completed" component={CompletedPage} />
           <Route path="/all" component={AllTasksPage} />
           <Route path="/about" component={AboutPage} />
+          <Route path="/guide" component={GuidePage} />
         </Router>
       </ToastProvider>
     </AppProvider>
