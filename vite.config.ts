@@ -10,4 +10,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
   },
+  esbuild: {
+    drop: process.env.NODE_ENV !== 'development' ? ['console'] : [],
+  },
 });
