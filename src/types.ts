@@ -32,7 +32,7 @@ export interface AppState {
   tasks: Task[];
 }
 
-export type ViewType = 'pending' | 'completed' | 'all';
+export type ViewType = 'pending' | 'completed' | 'all' | 'sort';
 
 // 用于树形展示的接口
 export interface TaskSetNode extends TaskSet {

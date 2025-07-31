@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 const PendingPage = lazy(() => import('./pages/PendingPage'));
 const CompletedPage = lazy(() => import('./pages/CompletedPage'));
 const AllTasksPage = lazy(() => import('./pages/AllTasksPage'));
+const SortPage = lazy(() => import('./pages/SortPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const GuidePage = lazy(() => import('./pages/GuidePage'));
 
@@ -19,6 +20,7 @@ const App: Component = () => {
           <Route path="/" component={PendingPage} />
           <Route path="/completed" component={CompletedPage} />
           <Route path="/all" component={AllTasksPage} />
+          <Route path="/sort" component={SortPage} />
           <Route path="/about" component={AboutPage} />
           <Route path="/guide" component={GuidePage} />
         </Router>

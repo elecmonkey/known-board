@@ -11,7 +11,8 @@ export default function Navigation() {
   const navItems = [
     { path: '/', label: '待办', icon: '📋' },
     { path: '/completed', label: '已完成', icon: '✅' },
-    { path: '/all', label: '所有任务', icon: '📚' }
+    { path: '/all', label: '所有任务', icon: '📚' },
+    { path: '/sort', label: '排序', icon: '🔄' }
   ];
 
   const updateIndicatorPosition = () => {
