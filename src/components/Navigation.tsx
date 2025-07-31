@@ -65,7 +65,7 @@ export default function Navigation() {
 
   return (
     <nav class="bg-white shadow-sm border-b border-gray-200">
-      <div class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="flex-grow max-w-7xl mx-auto px-0 sm:px-6 lg:px-8 w-full">
         <div class="max-w-4xl mx-auto">
           {/* 移动端两行布局 */}
           <div class="sm:hidden">
