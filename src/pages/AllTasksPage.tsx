@@ -3,6 +3,7 @@ import { useApp } from '../store';
 import TaskList from '../components/TaskList';
 import AddItemForm from '../components/AddItemForm';
 import { Task, TaskSet } from '../types';
+import PlusIcon from '../components/icons/PlusIcon';
 
 export default function AllTasksPage() {
   const { state, addTask, addTaskSet, setCurrentView } = useApp();
@@ -46,17 +47,17 @@ export default function AllTasksPage() {
   };
 
   return (
-    <div class="max-w-4xl mx-auto py-4">
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">所有任务</h1>
-        <button
-          onClick={() => setShowAddForm(true)}
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          添加项目
-        </button>
-      </div>
-
+    <div class="max-w-4xl mx-auto">
+      <TaskList 
+        tasks={filteredData().tasks} 
+        taskSets={filteredData().taskSets}
+        emptyState={{
+          icon: '📚',
+          title: '暂无任务',
+          description: '点击下方按钮开始创建任务或任务集'
+        }}
+      />
+      
       {showAddForm() && (
         <AddItemForm
           onAdd={handleAdd}
@@ -64,16 +65,16 @@ export default function AllTasksPage() {
           title="添加新项目"
         />
       )}
-
-      <TaskList 
-        tasks={filteredData().tasks} 
-        taskSets={filteredData().taskSets}
-        emptyState={{
-          icon: '📚',
-          title: '暂无任务',
-          description: '点击上方"添加项目"按钮开始创建任务或任务集'
-        }}
-      />
+      
+      <div class="flex justify-center mt-6">
+        <button
+          onClick={() => setShowAddForm(true)}
+          class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition-all duration-200 hover:scale-105"
+          aria-label="添加项目"
+        >
+          <PlusIcon class="w-6 h-6" />
+        </button>
+      </div>
     </div>
   );
 }
