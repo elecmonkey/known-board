@@ -14,12 +14,12 @@ importers:
       '@solidjs/router':
         specifier: ^0.15.3
         version: 0.15.3(solid-js@1.9.7)
+      '@thisbeyond/solid-dnd':
+        specifier: ^0.7.5
+        version: 0.7.5(solid-js@1.9.7)
       solid-js:
         specifier: ^1.9.7
         version: 1.9.7
-      sortablejs:
-        specifier: ^1.15.6
-        version: 1.15.6
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.1.11
@@ -27,9 +27,6 @@ importers:
       '@types/node':
         specifier: ^24.1.0
         version: 24.1.0
-      '@types/sortablejs':
-        specifier: ^1.15.8
-        version: 1.15.8
       tailwindcss:
         specifier: ^4.1.11
         version: 4.1.11
@@ -503,6 +500,12 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
 
+  '@thisbeyond/solid-dnd@0.7.5':
+    resolution: {integrity: sha512-DfI5ff+yYGpK9M21LhYwIPlbP2msKxN2ARwuu6GF8tT1GgNVDTI8VCQvH4TJFoVApP9d44izmAcTh/iTCH2UUw==}
+    engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
+    peerDependencies:
+      solid-js: ^1.5
+
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -520,9 +523,6 @@ packages:
 
   '@types/node@24.1.0':
     resolution: {integrity: sha512-ut5FthK5moxFKH2T1CUOC6ctR67rQRvvHdFLCD2Ql6KXmMuCrjsSsRI9UsLCm9M18BMwClv4pn327UvB7eeO1w==}
-
-  '@types/sortablejs@1.15.8':
-    resolution: {integrity: sha512-b79830lW+RZfwaztgs1aVPgbasJ8e7AXtZYHTELNXZPsERt4ymJdjV4OccDbHQAvHrCcFpbF78jkm0R6h/pZVg==}
 
   babel-plugin-jsx-dom-expressions@0.39.8:
     resolution: {integrity: sha512-/MVOIIjonylDXnrWmG23ZX82m9mtKATsVHB7zYlPfDR9Vdd/NBE48if+wv27bSkBtyO7EPMUlcUc4J63QwuACQ==}
@@ -767,9 +767,6 @@ packages:
     resolution: {integrity: sha512-F3aPsX6hVw9ttm5LYlth8Q15x6MlI/J3Dn+o3EQyRTtTxidepSTwAYdozt01/YA+7ObcciagGEyXIopGZzQtbA==}
     peerDependencies:
       solid-js: ^1.3
-
-  sortablejs@1.15.6:
-    resolution: {integrity: sha512-aNfiuwMEpfBM/CN6LY0ibyhxPfPbyFeBTYJKCvzkJ2GkUpazIt3H+QIPAMHwqQ7tMKaHz1Qj+rJJCqljnf4p3A==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -1230,6 +1227,10 @@ snapshots:
       tailwindcss: 4.1.11
       vite: 7.0.6(@types/node@24.1.0)(jiti@2.5.1)(lightningcss@1.30.1)(yaml@2.6.1)
 
+  '@thisbeyond/solid-dnd@0.7.5(solid-js@1.9.7)':
+    dependencies:
+      solid-js: 1.9.7
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.28.0
@@ -1256,8 +1257,6 @@ snapshots:
   '@types/node@24.1.0':
     dependencies:
       undici-types: 7.8.0
-
-  '@types/sortablejs@1.15.8': {}
 
   babel-plugin-jsx-dom-expressions@0.39.8(@babel/core@7.28.0):
     dependencies:
@@ -1491,8 +1490,6 @@ snapshots:
       solid-js: 1.9.7
     transitivePeerDependencies:
       - supports-color
-
-  sortablejs@1.15.6: {}
 
   source-map-js@1.2.1: {}
 
