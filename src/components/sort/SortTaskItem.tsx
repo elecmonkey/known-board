@@ -1,7 +1,7 @@
-import { Task } from '../../types';
+import { TreeNode } from '@/types';
 
 interface SortTaskItemProps {
-  task: Task;
+  node: TreeNode;
   level: number;
 }
 
@@ -13,7 +13,7 @@ export default function SortTaskItem(props: SortTaskItemProps) {
     >
       <div class="flex items-center space-x-3 flex-1">
         <span class="text-lg">📝</span>
-        <span class="text-gray-900 font-medium">{props.task.title}</span>
+        <span class="text-gray-900 font-medium">{props.node.title}</span>
         <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">任务</span>
       </div>
       <div class="text-gray-400">

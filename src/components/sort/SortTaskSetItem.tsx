@@ -1,7 +1,7 @@
-import { TaskSet } from '../../types';
+import { TreeNode } from '@/types';
 
 interface SortTaskSetItemProps {
-  taskSet: TaskSet;
+  node: TreeNode;
   level: number;
   children: any;
 }
@@ -15,7 +15,7 @@ export default function SortTaskSetItem(props: SortTaskSetItemProps) {
       >
         <div class="flex items-center space-x-3 flex-1">
           <span class="text-lg">📁</span>
-          <span class="text-gray-900 font-medium">{props.taskSet.title}</span>
+          <span class="text-gray-900 font-medium">{props.node.title}</span>
           <span class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">任务集</span>
         </div>
         <div class="text-gray-400">
