@@ -1,4 +1,4 @@
-import { onMount } from 'solid-js';
+import { onMount, onCleanup } from 'solid-js';
 import { useApp } from '@/store';
 import { 
   DragDropProvider, 
@@ -17,10 +17,23 @@ export default function SortPage() {
     setCurrentView('sort');
   });
 
+  // 清理：确保组件卸载时移除dragging类
+  onCleanup(() => {
+    document.body.classList.remove('dragging');
+  });
+
   const Sandbox = () => {
-    const [, { onDragEnd }] = useDragDropContext()!;
+    const [, { onDragStart, onDragEnd }] = useDragDropContext()!;
+
+    onDragStart(() => {
+      // 拖拽开始时禁用页面滚动
+      document.body.classList.add('dragging');
+    });
 
     onDragEnd(({ draggable, droppable }) => {
+      // 拖拽结束时恢复页面滚动
+      document.body.classList.remove('dragging');
+      
       if (droppable && draggable.id !== droppable.id) {
         console.log('Drag ended:', draggable.id, 'to', droppable.id);
         console.log('Droppable data:', droppable.data);

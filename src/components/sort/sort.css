@@ -9,6 +9,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* 防止移动端页面滚动 */
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .drag-handle:hover {
@@ -45,6 +50,15 @@
 .sortable-task-item,
 .sortable-taskset-item {
   position: relative;
+  /* 防止拖拽时的文本选择 */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 拖拽时禁用页面滚动 */
+.sortable-task-item.dragging,
+.sortable-taskset-item.dragging {
+  touch-action: none;
 }
 
 /* 拖拽覆盖层样式 */
@@ -64,4 +78,10 @@
 /* 树形结构视觉辅助 */
 .sortable-tree {
   position: relative;
+}
+
+/* 拖拽进行时禁用页面滚动 */
+body.dragging {
+  overflow: hidden;
+  touch-action: none;
 }

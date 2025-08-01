@@ -15,7 +15,7 @@ export default function SortableTaskItem(props: SortableTaskItemProps) {
   
   return (
     <div
-      class="sortable-task-item"
+      class={`sortable-task-item ${draggable.isActiveDraggable ? 'dragging' : ''}`}
       style={{ 
         'margin-left': `${props.level * 24}px`,
         transform: draggable.transform ? transformStyle(draggable.transform).transform : undefined,
