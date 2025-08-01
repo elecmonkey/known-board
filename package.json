@@ -1,6 +1,6 @@
 {
   "name": "known-board",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A solidjs-powered learning tracker for books & online courses.",
   "type": "module",
   "scripts": {
