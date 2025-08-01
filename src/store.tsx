@@ -77,8 +77,7 @@ export class TreeUtils {
       title,
       description,
       completed: false,
-      episodes: [],
-      children: []
+      episodes: []
     };
   }
 
