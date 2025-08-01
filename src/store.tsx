@@ -200,7 +200,39 @@ export function AppProvider(props: { children: JSX.Element }) {
       
       // 找到要移动的节点
       const nodeToMove = TreeUtils.findNode(newState.children, nodeId);
-      if (!nodeToMove) return prev;
+      if (!nodeToMove) {
+        console.warn('moveNode: 找不到要移动的节点', nodeId);
+        return prev;
+      }
+      
+      // 验证移动目标是否有效
+      if (newParentId) {
+        const newParent = TreeUtils.findNode(newState.children, newParentId);
+        if (!newParent) {
+          console.warn('moveNode: 找不到目标父节点', newParentId);
+          return prev; // 如果找不到目标父节点，不执行移动
+        }
+        if (newParent.type !== 'taskSet') {
+          console.warn('moveNode: 目标父节点不是taskSet', newParentId);
+          return prev; // 只有taskSet才能作为父节点
+        }
+      }
+      
+      // 防止将节点移动到自己的子节点中（避免循环引用）
+      if (newParentId && nodeToMove.type === 'taskSet') {
+        const isDescendant = (parentNode: TreeNode, targetId: string): boolean => {
+          if (parentNode.id === targetId) return true;
+          if (parentNode.children) {
+            return parentNode.children.some(child => isDescendant(child, targetId));
+          }
+          return false;
+        };
+        
+        if (isDescendant(nodeToMove, newParentId)) {
+          console.warn('moveNode: 不能将节点移动到自己的子节点中');
+          return prev;
+        }
+      }
       
       // 从原位置删除
       newState.children = newState.children.filter(node => node.id !== nodeId);
@@ -220,19 +252,21 @@ export function AppProvider(props: { children: JSX.Element }) {
         const newParent = TreeUtils.findNode(newState.children, newParentId);
         if (newParent) {
           if (!newParent.children) newParent.children = [];
-          if (newIndex !== undefined) {
+          if (newIndex !== undefined && newIndex >= 0 && newIndex <= newParent.children.length) {
             newParent.children.splice(newIndex, 0, nodeToMove);
           } else {
             newParent.children.push(nodeToMove);
           }
+          console.log('moveNode: 移动到父节点', newParentId, '位置', newIndex);
         }
       } else {
         // 移动到根级别
-        if (newIndex !== undefined) {
+        if (newIndex !== undefined && newIndex >= 0 && newIndex <= newState.children.length) {
           newState.children.splice(newIndex, 0, nodeToMove);
         } else {
           newState.children.push(nodeToMove);
         }
+        console.log('moveNode: 移动到根级别，位置', newIndex);
       }
       
       return newState;

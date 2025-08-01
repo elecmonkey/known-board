@@ -28,11 +28,25 @@ export default function SortPage() {
         // 解析放置区域数据
         const dropData = droppable.data as { parentId: string | null; index: number };
         
+        // 验证拖拽数据
+        if (!dropData || typeof dropData.index !== 'number') {
+          console.warn('Invalid drop data:', dropData);
+          return;
+        }
+        
+        // 确保index是有效的数字
+        const targetIndex = Math.max(0, Math.floor(dropData.index));
+        const targetParentId = dropData.parentId || undefined;
+        
+        console.log('Executing move:', draggable.id, '→', targetParentId || 'root', 'at index', targetIndex);
+        
         moveNode(
           draggable.id as string,
-          dropData.parentId || undefined,
-          dropData.index
+          targetParentId,
+          targetIndex
         );
+      } else {
+        console.log('Drag cancelled or same position');
       }
     });
 
