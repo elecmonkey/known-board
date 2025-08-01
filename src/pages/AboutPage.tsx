@@ -6,7 +6,7 @@ export default function AboutPage() {
         
         <div class="prose prose-gray max-w-none">
           <p class="text-gray-700 mb-4">
-            Known Board 网课看板，一个类 Todo List 应用。
+            Known Board 看板，一个类 Todo List 应用。
           </p>
           <p class="text-gray-700 mb-4">
             传统 Todo List 在规划学习资源时用起来并不舒服，
@@ -14,8 +14,17 @@ export default function AboutPage() {
             但其实——有一个100集的网课、有一本25章的书需要学习——是一个很常见的需求。
           </p>
           <p class="text-gray-700 mb-4">
-            所以有了 Known Board.
+            所以有了 Known Board 看版。
           </p>
+          
+          <h2 class="text-xl font-semibold text-gray-800 mt-6 mb-3">技术栈</h2>
+          <ul class="list-disc pl-5 space-y-2 text-gray-700">
+            <li>前端框架：<a href="https://www.solidjs.com/" target="_blank" class="text-blue-600 hover:underline">SolidJS</a></li>
+            <li>样式工具：<a href="https://tailwindcss.com/" target="_blank" class="text-blue-600 hover:underline">Tailwind CSS</a></li>
+            <li>构建工具：<a href="https://vitejs.dev/" target="_blank" class="text-blue-600 hover:underline">Vite</a></li>
+            <li>路由管理：<a href="https://docs.solidjs.com/solid-router" target="_blank" class="text-blue-600 hover:underline">Solid Router</a></li>
+            <li>拖拽功能：<a href="https://solid-dnd.com/" target="_blank" class="text-blue-600 hover:underline">Solid DnD</a></li>
+          </ul>
         </div>
 
         <div class="mt-6">
@@ -27,18 +36,18 @@ export default function AboutPage() {
         
         <div class="mt-6">
           <h2 class="text-xl font-semibold text-gray-800 mb-4">作者博客 & 开源仓库</h2>
-          <div class="flex flex-col [@media(min-width:440px)]:flex-row [@media(max-width:440px)]:max-w-45 gap-4">
+          <div class="flex flex-col [@media(min-width:440px)]:flex-row [@media(min-width:440px)]:items-start gap-4">
             <a 
               href="https://www.elecmonkey.com/"
               target="_blank" 
-              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-fit"
             >
               Elecmonkey的小花园
             </a>
             <a 
               href="https://github.com/elecmonkey/known-board"
               target="_blank" 
-              class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-fit"
             >
               GitHub 项目仓库
             </a>
