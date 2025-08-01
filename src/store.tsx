@@ -1,6 +1,6 @@
 import { createSignal, createContext, useContext, JSX, createEffect } from 'solid-js';
 import { AppStateV2 } from '@/types/app-state';
-import { TreeNode } from '@/types/tree';
+import { TreeNode, Task, TaskSet, isTask, isTaskSet } from '@/types/tree';
 import { ViewType } from '@/types/common';
 import { Episode } from '@/types/episode';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
@@ -17,7 +17,7 @@ export class TreeUtils {
       if (node.id === id) {
         return node;
       }
-      if (node.children) {
+      if (isTaskSet(node)) {
         const found = this.findNode(node.children, id);
         if (found) return found;
       }
@@ -30,7 +30,7 @@ export class TreeUtils {
    */
   static findParent(children: TreeNode[], targetId: string): TreeNode | null {
     for (const node of children) {
-      if (node.children) {
+      if (isTaskSet(node)) {
         if (node.children.some(child => child.id === targetId)) {
           return node;
         }
@@ -47,7 +47,7 @@ export class TreeUtils {
   static traverse(children: TreeNode[], callback: (node: TreeNode) => void): void {
     children.forEach(node => {
       callback(node);
-      if (node.children) {
+      if (isTaskSet(node)) {
         this.traverse(node.children, callback);
       }
     });
@@ -58,14 +58,21 @@ export class TreeUtils {
    */
   static filter(children: TreeNode[], predicate: (node: TreeNode) => boolean): TreeNode[] {
     return children.reduce((acc: TreeNode[], node) => {
-      const childrenFiltered = node.children ? this.filter(node.children, predicate) : [];
-      if (predicate(node) && childrenFiltered.length > 0) {
-        acc.push({ ...node, children: childrenFiltered });
-      } else if (predicate(node)) {
-        acc.push({ ...node, children: [] });
-      } else if (childrenFiltered.length > 0) {
-        acc.push({ ...node, children: childrenFiltered });
+      const childrenFiltered = isTaskSet(node) ? this.filter(node.children, predicate) : [];
+      
+      if (predicate(node)) {
+        if (isTaskSet(node)) {
+          acc.push({
+            ...node,
+            children: childrenFiltered
+          });
+        } else {
+          acc.push(node);
+        }
       }
+      // 注意：我们不提升子节点，因为如果父节点不满足条件（如隐藏的taskSet），
+      // 其子节点也应该被过滤掉
+      
       return acc;
     }, []);
   }
@@ -75,8 +82,8 @@ export class TreeUtils {
    */
   static createTaskNode(id: string, title: string, description?: string): TreeNode {
     return {
-      id,
       type: 'task',
+      id,
       title,
       description,
       completed: false,
@@ -89,8 +96,8 @@ export class TreeUtils {
    */
   static createTaskSetNode(id: string, title: string, description?: string): TreeNode {
     return {
-      id,
       type: 'taskSet',
+      id,
       title,
       description,
       hidden: false,
@@ -156,8 +163,7 @@ export function AppProvider(props: { children: JSX.Element }) {
     setState(prev => {
       const newState = cloneState();
       const parent = TreeUtils.findNode(newState.children, parentId);
-      if (parent) {
-        if (!parent.children) parent.children = [];
+      if (parent && isTaskSet(parent)) {
         parent.children.push(node);
       }
       return newState;
@@ -185,7 +191,7 @@ export function AppProvider(props: { children: JSX.Element }) {
       // 从所有父节点的children中删除
       const removeFromChildren = (children: TreeNode[]) => {
         for (const node of children) {
-          if (node.children) {
+          if (isTaskSet(node)) {
             node.children = node.children.filter(child => child.id !== id);
             removeFromChildren(node.children);
           }
@@ -222,10 +228,10 @@ export function AppProvider(props: { children: JSX.Element }) {
       }
       
       // 防止将节点移动到自己的子节点中（避免循环引用）
-      if (newParentId && nodeToMove.type === 'taskSet') {
+      if (newParentId && isTaskSet(nodeToMove)) {
         const isDescendant = (parentNode: TreeNode, targetId: string): boolean => {
           if (parentNode.id === targetId) return true;
-          if (parentNode.children) {
+          if (isTaskSet(parentNode)) {
             return parentNode.children.some(child => isDescendant(child, targetId));
           }
           return false;
@@ -242,7 +248,7 @@ export function AppProvider(props: { children: JSX.Element }) {
       
       const removeFromChildren = (children: TreeNode[]) => {
         for (const node of children) {
-          if (node.children) {
+          if (isTaskSet(node)) {
             node.children = node.children.filter(child => child.id !== nodeId);
             removeFromChildren(node.children);
           }
@@ -253,8 +259,7 @@ export function AppProvider(props: { children: JSX.Element }) {
       // 添加到新位置
       if (newParentId) {
         const newParent = TreeUtils.findNode(newState.children, newParentId);
-        if (newParent) {
-          if (!newParent.children) newParent.children = [];
+        if (newParent && isTaskSet(newParent)) {
           if (newIndex !== undefined && newIndex >= 0 && newIndex <= newParent.children.length) {
             newParent.children.splice(newIndex, 0, nodeToMove);
           } else {

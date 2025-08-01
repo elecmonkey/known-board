@@ -1,5 +1,5 @@
 import { Show } from 'solid-js';
-import { TreeNode } from '@/types/tree';
+import { TreeNode, isTaskSet } from '@/types/tree';
 import { createDraggable } from '@thisbeyond/solid-dnd';
 import { transformStyle } from '@thisbeyond/solid-dnd';
 import SortableTree from '@/components/sort/SortableTree';
@@ -17,7 +17,7 @@ interface SortableTaskSetItemProps {
 export default function SortableTaskSetItem(props: SortableTaskSetItemProps) {
   const draggable = createDraggable(props.node.id, props.node);
   
-  const hasChildren = () => props.node.children && props.node.children.length > 0;
+  const hasChildren = () => isTaskSet(props.node) && props.node.children.length > 0;
   
   return (
     <div
@@ -34,7 +34,7 @@ export default function SortableTaskSetItem(props: SortableTaskSetItemProps) {
         <div class="flex items-center space-x-2 flex-1 min-w-0">
           <span class="text-lg">📁</span>
           <span class="text-gray-900 font-medium truncate">{props.node.title}</span>
-          {props.node.hidden && (
+          {isTaskSet(props.node) && props.node.hidden && (
             <HideIcon class="w-4 h-4 text-gray-500 flex-shrink-0" />
           )}
         </div>
@@ -56,7 +56,7 @@ export default function SortableTaskSetItem(props: SortableTaskSetItemProps) {
         
         <Show when={hasChildren()}>
           <SortableTree 
-            nodes={props.node.children!} 
+            nodes={isTaskSet(props.node) ? props.node.children : []} 
             parentId={props.node.id}
             level={props.level + 1}
           />

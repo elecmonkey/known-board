@@ -1,4 +1,4 @@
-import { TreeNode } from '@/types/tree';
+import { TreeNode, isTaskSet, isTask } from '@/types/tree';
 
 /**
  * 检查任务节点是否属于隐藏的TaskSet（递归检查所有父级）
@@ -7,7 +7,7 @@ export const isNodeInHiddenParent = (nodeId: string, allNodes: TreeNode[]): bool
   // 在树形结构中找到节点的父节点
   const findParent = (children: TreeNode[], targetId: string): TreeNode | null => {
     for (const node of children) {
-      if (node.children) {
+      if (isTaskSet(node)) {
         if (node.children.some(child => child.id === targetId)) {
           return node;
         }
@@ -22,7 +22,7 @@ export const isNodeInHiddenParent = (nodeId: string, allNodes: TreeNode[]): bool
   if (!parent) return false;
 
   // 如果父节点是隐藏的TaskSet，返回true
-  if (parent.type === 'taskSet' && parent.hidden) {
+  if (isTaskSet(parent) && parent.hidden) {
     return true;
   }
 
@@ -41,7 +41,7 @@ export const filterVisibleNodes = (
     // 检查当前节点是否应该显示
     const shouldShowNode = () => {
       // TaskSet节点：不能是隐藏的
-      if (node.type === 'taskSet' && node.hidden) {
+      if (isTaskSet(node) && node.hidden) {
         return false;
       }
       
@@ -54,14 +54,18 @@ export const filterVisibleNodes = (
     };
 
     // 递归过滤子节点
-    const filteredChildren = node.children ? filterVisibleNodes(node.children, nodeFilter) : [];
+    const filteredChildren = isTaskSet(node) ? filterVisibleNodes(node.children, nodeFilter) : [];
 
     if (shouldShowNode()) {
       // 如果当前节点应该显示，包含它和它过滤后的子节点
-      acc.push({
-        ...node,
-        children: filteredChildren
-      });
+      if (isTaskSet(node)) {
+        acc.push({
+          ...node,
+          children: filteredChildren
+        });
+      } else {
+        acc.push(node);
+      }
     }
     // 移除了隐藏taskSet子节点提升的逻辑
     // 隐藏的taskSet及其所有子孙后代都应该完全不显示
@@ -88,10 +92,10 @@ export const getAllTasks = (children: TreeNode[]): TreeNode[] => {
   
   const traverse = (nodes: TreeNode[]) => {
     nodes.forEach(node => {
-      if (node.type === 'task') {
+      if (isTask(node)) {
         tasks.push(node);
       }
-      if (node.children) {
+      if (isTaskSet(node)) {
         traverse(node.children);
       }
     });
@@ -109,10 +113,8 @@ export const getAllTaskSets = (children: TreeNode[]): TreeNode[] => {
   
   const traverse = (nodes: TreeNode[]) => {
     nodes.forEach(node => {
-      if (node.type === 'taskSet') {
+      if (isTaskSet(node)) {
         taskSets.push(node);
-      }
-      if (node.children) {
         traverse(node.children);
       }
     });
@@ -131,14 +133,14 @@ export const filterVisibleItems = (
   taskFilter?: (node: TreeNode) => boolean
 ) => {
   const visibleNodes = filterRootVisibleNodes(rootChildren, (node) => {
-    if (taskFilter && node.type === 'task') {
+    if (taskFilter && isTask(node)) {
       return taskFilter(node);
     }
     return true;
   });
 
   return {
-    tasks: visibleNodes.filter(node => node.type === 'task'),
-    taskSets: visibleNodes.filter(node => node.type === 'taskSet')
+    tasks: visibleNodes.filter(node => isTask(node)),
+    taskSets: visibleNodes.filter(node => isTaskSet(node))
   };
 };

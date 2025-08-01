@@ -1,4 +1,4 @@
-import { TreeNode } from '@/types/tree';
+import { TreeNode, isTask } from '@/types/tree';
 import { createDraggable } from '@thisbeyond/solid-dnd';
 import { transformStyle } from '@thisbeyond/solid-dnd';
 import DragHandle from '@/components/sort/DragHandle';
@@ -28,7 +28,7 @@ export default function SortableTaskItem(props: SortableTaskItemProps) {
         <div class="flex items-center space-x-2 flex-1 min-w-0">
           <span class="text-lg">📝</span>
           <span class="text-gray-900 font-medium truncate">{props.node.title}</span>
-          {props.node.completed && (
+          {isTask(props.node) && props.node.completed && (
             <CheckIcon class="w-4 h-4 text-green-600 flex-shrink-0" />
           )}
         </div>

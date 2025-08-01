@@ -1,5 +1,5 @@
 import { createSignal, For, Show, createMemo } from 'solid-js';
-import { TreeNode } from '@/types/tree';
+import { Task } from '@/types/tree';
 import { Episode } from '@/types/episode';
 import { useApp } from '@/store';
 import { useToast } from '@/components/Toast';
@@ -13,7 +13,7 @@ import Divider from '@/components/Divider';
 const episodeVisibilityMap = new Map<string, boolean>();
 
 interface TaskItemProps {
-  task: TreeNode;
+  task: Task;
   depth?: number;
 }
 

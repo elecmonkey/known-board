@@ -3,7 +3,7 @@ import { Key } from '@solid-primitives/keyed';
 import TaskSetItem from '@/components/TaskSetItem';
 import TaskItem from '@/components/TaskItem';
 import Divider from '@/components/Divider';
-import { TreeNode } from '@/types/tree';
+import { TreeNode, TaskSet, Task, isTaskSet } from '@/types/tree';
 
 interface TaskListProps {
   nodes: TreeNode[];
@@ -20,11 +20,14 @@ export default function TaskList(props: TaskListProps) {
       <Key each={props.nodes} by={(node) => node.id}>
         {(node, index) => (
           <>
-            {node().type === 'taskSet' ? (
-              <TaskSetItem taskSet={node() as TreeNode} />
-            ) : (
-              <TaskItem task={node() as TreeNode} />
-            )}
+            {(() => {
+              const nodeValue = node();
+              if (isTaskSet(nodeValue)) {
+                return <TaskSetItem taskSet={nodeValue} />;
+              } else {
+                return <TaskItem task={nodeValue} />;
+              }
+            })()}
             <Show when={index() < props.nodes.length - 1}>
               <Divider class="my-2" />
             </Show>

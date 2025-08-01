@@ -1,6 +1,6 @@
 import { createSignal, For, Show, useContext } from 'solid-js';
 import { Key } from '@solid-primitives/keyed';
-import { TreeNode } from '@/types/tree';
+import { TaskSet, TreeNode, Task, isTask, isTaskSet } from '@/types/tree';
 import { useApp, AppContext, TreeUtils } from '@/store';
 import { useToast } from '@/components/Toast';
 import TaskItem from '@/components/TaskItem';
@@ -13,7 +13,7 @@ import DeleteIcon from '@/components/icons/DeleteIcon';
 import Divider from '@/components/Divider';
 
 interface TaskSetItemProps {
-  taskSet: TreeNode;
+  taskSet: TaskSet;
   depth?: number;
 }
 
@@ -84,7 +84,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
     
     return children.filter(child => {
       // TaskSet 过滤逻辑
-      if (child.type === 'taskSet') {
+      if (isTaskSet(child)) {
         // 在待办和已完成页面中，过滤掉隐藏的子TaskSet
         if (currentView() === 'pending' || currentView() === 'completed') {
           return !child.hidden;
@@ -93,7 +93,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
       }
       
       // Task 过滤逻辑
-      if (child.type === 'task') {
+      if (isTask(child)) {
         switch (currentView()) {
           case 'pending':
             return !child.completed;
@@ -237,11 +237,14 @@ export default function TaskSetItem(props: TaskSetItemProps) {
             <Key each={getFilteredChildren()} by={(child) => child.id}>
               {(child, index) => (
                 <>
-                  {child().type === 'taskSet' ? (
-                    <TaskSetItem taskSet={child()} depth={depth + 1} />
-                  ) : (
-                    <TaskItem task={child()} depth={depth + 1} />
-                  )}
+                  {(() => {
+                    const childValue = child();
+                    if (isTaskSet(childValue)) {
+                      return <TaskSetItem taskSet={childValue} depth={depth + 1} />;
+                    } else {
+                      return <TaskItem task={childValue} depth={depth + 1} />;
+                    }
+                  })()}
                   <Show when={index() < getFilteredChildren().length - 1}>
                     <Divider class="my-1 mx-4" />
                   </Show>

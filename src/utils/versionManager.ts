@@ -3,8 +3,8 @@
  */
 
 import { AppStateV1, AppStateV2, AppStateAny } from '@/types/app-state';
-import { TreeNode } from '@/types/tree';
-import { Task, TaskSet } from '@/types/legacy';
+import { TreeNode, Task, TaskSet, isTaskSet } from '@/types/tree';
+import { Task as LegacyTask, TaskSet as LegacyTaskSet } from '@/types/legacy';
 
 export const CURRENT_VERSION = '2.0' as const;
 
@@ -76,8 +76,8 @@ export function migrateV1ToV2(v1Data: AppStateV1): AppStateV2 {
   // 2. 转换所有 TaskSet 为 TreeNode
   v1Data.taskSets.forEach(taskSet => {
     const node: TreeNode = {
-      id: taskSet.id,
       type: 'taskSet',
+      id: taskSet.id,
       title: taskSet.title,
       description: taskSet.description,
       hidden: taskSet.hidden,
@@ -94,15 +94,14 @@ export function migrateV1ToV2(v1Data: AppStateV1): AppStateV2 {
   // 3. 转换所有 Task 为 TreeNode
   v1Data.tasks.forEach(task => {
     const node: TreeNode = {
-      id: task.id,
       type: 'task',
+      id: task.id,
       title: task.title,
       description: task.description,
       completed: task.completed,
       deadline: task.deadline,
       videoUrl: task.videoUrl,
-      episodes: task.episodes,
-      children: [] // Task 通常没有子节点，但保留结构一致性
+      episodes: task.episodes
     };
 
     const parentId = task.parentId;
@@ -115,9 +114,12 @@ export function migrateV1ToV2(v1Data: AppStateV1): AppStateV2 {
   // 4. 递归构建树结构
   function buildTree(nodes: TreeNode[]): TreeNode[] {
     return nodes.map(node => {
-      if (node.type === 'taskSet') {
+      if (isTaskSet(node)) {
         const children = childrenMap.get(node.id) || [];
-        node.children = buildTree(children);
+        return {
+          ...node,
+          children: buildTree(children)
+        };
       }
       return node;
     });

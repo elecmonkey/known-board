@@ -1,5 +1,5 @@
 import { useDragDropContext } from '@thisbeyond/solid-dnd';
-import { TreeNode } from '@/types/tree';
+import { TreeNode, isTaskSet, isTask } from '@/types/tree';
 import CheckIcon from '@/components/icons/CheckIcon';
 import HideIcon from '@/components/icons/HideIcon';
 
@@ -18,17 +18,17 @@ export default function DragOverlayContent() {
   return (
     <div class="drag-overlay-content w-full max-w-4xl">
       <div class={`flex items-center py-1.5 px-4 rounded-lg shadow-lg border w-full ${
-        node.type === 'taskSet' 
+        isTaskSet(node) 
           ? 'bg-blue-50 border-blue-200' 
           : 'bg-white border-gray-200'
       }`}>
         <div class="flex items-center space-x-2 flex-1 min-w-0">
-          <span class="text-lg">{node.type === 'taskSet' ? '📁' : '📝'}</span>
+          <span class="text-lg">{isTaskSet(node) ? '📁' : '📝'}</span>
           <span class="text-gray-900 font-medium truncate">{node.title}</span>
-          {node.type === 'task' && node.completed && (
+          {isTask(node) && node.completed && (
             <CheckIcon class="w-4 h-4 text-green-600 flex-shrink-0" />
           )}
-          {node.type === 'taskSet' && node.hidden && (
+          {isTaskSet(node) && node.hidden && (
             <HideIcon class="w-4 h-4 text-gray-500 flex-shrink-0" />
           )}
         </div>
