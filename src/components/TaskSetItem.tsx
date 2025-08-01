@@ -127,7 +127,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   return (
     <Show when={!props.taskSet.hidden || currentView() === 'all'}>
       <div style={`margin-left: ${depth * 20}px`}>
-        <div class={`py-3 ${
+        <div class={`py-3 pl-2 ${
           shouldApplyOpacity() ? 'opacity-50' : ''
         }`}>
         <div class="flex items-center justify-between">

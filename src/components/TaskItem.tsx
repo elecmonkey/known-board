@@ -152,7 +152,7 @@ export default function TaskItem(props: TaskItemProps) {
       <div class={`py-3 ${
         props.task.completed ? 'bg-green-50' : ''
       }`}>
-        <div class="flex items-start">
+        <div class="flex items-start pl-2">
           <button
             onClick={toggleCompleted}
             class={`flex-shrink-0 w-5 h-5 rounded border mr-3 mt-1 flex items-center justify-center ${
