@@ -1,6 +1,6 @@
 import { JSX } from 'solid-js';
-import Navigation from './Navigation';
-import Footer from './Footer';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 
 interface LayoutProps {
   children?: JSX.Element;

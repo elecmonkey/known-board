@@ -1,5 +1,5 @@
 // 收集所有页面组件
-const modules = import.meta.glob('./pages/*Page.tsx');
+const modules = import.meta.glob('@/pages/*Page.tsx');
 
 console.log(modules);
 

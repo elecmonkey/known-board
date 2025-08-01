@@ -1,10 +1,10 @@
 import { createSignal, onMount } from 'solid-js';
-import { useApp } from '../store';
-import TaskList from '../components/TaskList';
-import AddItemForm from '../components/AddItemForm';
-import { Task, TaskSet } from '../types';
-import { filterVisibleItems } from '../utils/filterUtils';
-import PlusIcon from '../components/icons/PlusIcon';
+import { useApp } from '@/store';
+import TaskList from '@/components/TaskList';
+import AddItemForm from '@/components/AddItemForm';
+import { Task, TaskSet } from '@/types';
+import { filterVisibleItems } from '@/utils/filterUtils';
+import PlusIcon from '@/components/icons/PlusIcon';
 
 export default function PendingPage() {
   const { state, addTask, addTaskSet, setCurrentView } = useApp();

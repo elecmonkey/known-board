@@ -1,9 +1,9 @@
 import { For, Show } from 'solid-js';
 import { Key } from '@solid-primitives/keyed';
-import TaskSetItem from './TaskSetItem';
-import TaskItem from './TaskItem';
-import Divider from './Divider';
-import { Task, TaskSet } from '../types';
+import TaskSetItem from '@/components/TaskSetItem';
+import TaskItem from '@/components/TaskItem';
+import Divider from '@/components/Divider';
+import { Task, TaskSet } from '@/types';
 
 interface TaskListProps {
   tasks: Task[];

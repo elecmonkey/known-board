@@ -1,6 +1,6 @@
 import { onMount } from 'solid-js';
-import { useApp } from '../store';
-import TaskList from '../components/TaskList';
+import { useApp } from '@/store';
+import TaskList from '@/components/TaskList';
 
 export default function AllTasksPage() {
   const { state, setCurrentView } = useApp();

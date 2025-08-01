@@ -1,6 +1,6 @@
 import { createSignal, createContext, useContext, JSX, createEffect } from 'solid-js';
-import { AppState, Task, TaskSet, ViewType } from './types';
-import { loadFromStorage, saveToStorage } from './utils/storage';
+import { AppState, Task, TaskSet, ViewType } from '@/types';
+import { loadFromStorage, saveToStorage } from '@/utils/storage';
 
 const initialState: AppState = loadFromStorage();
 

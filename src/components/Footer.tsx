@@ -1,6 +1,6 @@
 import { A } from '@solidjs/router';
-import { useApp } from '../store';
-import { exportDataAsJson, importDataFromJson } from '../utils/importExport';
+import { useApp } from '@/store';
+import { exportDataAsJson, importDataFromJson } from '@/utils/importExport';
 
 export default function Footer() {
   const { state, importData } = useApp();

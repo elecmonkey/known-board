@@ -1,4 +1,4 @@
-import { Task, TaskSet } from '../types';
+import { Task, TaskSet } from '@/types';
 
 /**
  * 检查任务是否属于隐藏的TaskSet（递归检查所有父级）

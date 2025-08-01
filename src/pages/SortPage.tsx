@@ -1,6 +1,6 @@
 import { onMount, For } from 'solid-js';
-import { useApp } from '../store';
-import { renderTree } from '../components/sort/SortTreeRenderer';
+import { useApp } from '@/store';
+import { renderTree } from '@/components/sort/SortTreeRenderer';
 
 export default function SortPage() {
   const { state, setCurrentView } = useApp();

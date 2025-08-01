@@ -1,5 +1,5 @@
 import { createSignal, createContext, useContext, JSX } from 'solid-js';
-import UndoIcon from './icons/UndoIcon';
+import UndoIcon from '@/components/icons/UndoIcon';
 
 interface ToastItem {
   id: string;

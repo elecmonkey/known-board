@@ -1,12 +1,12 @@
 import { createSignal, For, Show, createMemo } from 'solid-js';
-import { Task, Episode } from '../types';
-import { useApp } from '../store';
-import { useToast } from './Toast';
-import BatchRenameModal from './BatchRenameModal';
-import EditIcon from './icons/EditIcon';
-import DeleteIcon from './icons/DeleteIcon';
-import PlusIcon from './icons/PlusIcon';
-import Divider from './Divider';
+import { Task, Episode } from '@/types';
+import { useApp } from '@/store';
+import { useToast } from '@/components/Toast';
+import BatchRenameModal from '@/components/BatchRenameModal';
+import EditIcon from '@/components/icons/EditIcon';
+import DeleteIcon from '@/components/icons/DeleteIcon';
+import PlusIcon from '@/components/icons/PlusIcon';
+import Divider from '@/components/Divider';
 
 // 使用Map来存储每个任务的展开状态，避免组件重新渲染时丢失
 const episodeVisibilityMap = new Map<string, boolean>();

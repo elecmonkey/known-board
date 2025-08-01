@@ -1,6 +1,6 @@
 import { Task, TaskSet } from '../../types';
-import SortTaskItem from './SortTaskItem';
-import SortTaskSetItem from './SortTaskSetItem';
+import SortTaskItem from '@/components/sort/SortTaskItem';
+import SortTaskSetItem from '@/components/sort/SortTaskSetItem';
 
 // 递归渲染树形结构
 export function renderTree(

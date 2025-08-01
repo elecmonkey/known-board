@@ -1,7 +1,7 @@
 import { onMount } from 'solid-js';
-import { useApp } from '../store';
-import TaskList from '../components/TaskList';
-import { filterVisibleItems } from '../utils/filterUtils';
+import { useApp } from '@/store';
+import TaskList from '@/components/TaskList';
+import { filterVisibleItems } from '@/utils/filterUtils';
 
 export default function CompletedPage() {
   const { state, setCurrentView } = useApp();
