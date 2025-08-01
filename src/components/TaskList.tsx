@@ -3,7 +3,7 @@ import { Key } from '@solid-primitives/keyed';
 import TaskSetItem from '@/components/TaskSetItem';
 import TaskItem from '@/components/TaskItem';
 import Divider from '@/components/Divider';
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 
 interface TaskListProps {
   nodes: TreeNode[];

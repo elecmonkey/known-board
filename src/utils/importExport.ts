@@ -2,7 +2,7 @@
  * 数据导入导出工具
  */
 
-import { AppStateV2 } from '@/types';
+import { AppStateV2 } from '@/types/app-state';
 import { loadAppData, prepareExportData } from '@/utils/versionManager';
 
 /**

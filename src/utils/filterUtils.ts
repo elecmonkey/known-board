@@ -1,4 +1,4 @@
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 
 /**
  * 检查任务节点是否属于隐藏的TaskSet（递归检查所有父级）

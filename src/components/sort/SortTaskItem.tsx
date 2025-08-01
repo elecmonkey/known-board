@@ -1,4 +1,4 @@
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 
 interface SortTaskItemProps {
   node: TreeNode;

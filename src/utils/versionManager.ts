@@ -2,7 +2,9 @@
  * 数据版本管理和迁移工具
  */
 
-import { AppStateV1, AppStateV2, AppStateAny, TreeNode, Task, TaskSet } from '@/types';
+import { AppStateV1, AppStateV2, AppStateAny } from '@/types/app-state';
+import { TreeNode } from '@/types/tree';
+import { Task, TaskSet } from '@/types/legacy';
 
 export const CURRENT_VERSION = '2.0' as const;
 

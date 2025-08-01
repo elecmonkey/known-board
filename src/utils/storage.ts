@@ -1,4 +1,4 @@
-import { AppStateV2 } from '@/types';
+import { AppStateV2 } from '@/types/app-state';
 import { loadAppData, createDefaultAppState } from '@/utils/versionManager';
 
 const STORAGE_KEY = 'known-board-data';

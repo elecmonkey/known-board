@@ -1,5 +1,5 @@
 import { useDragDropContext } from '@thisbeyond/solid-dnd';
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 import CheckIcon from '@/components/icons/CheckIcon';
 import HideIcon from '@/components/icons/HideIcon';
 

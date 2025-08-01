@@ -2,7 +2,7 @@ import { createSignal, onMount } from 'solid-js';
 import { useApp } from '@/store';
 import TaskList from '@/components/TaskList';
 import AddItemForm from '@/components/AddItemForm';
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 import { filterRootVisibleNodes } from '@/utils/filterUtils';
 import PlusIcon from '@/components/icons/PlusIcon';
 

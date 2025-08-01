@@ -1,5 +1,8 @@
 import { createSignal, createContext, useContext, JSX, createEffect } from 'solid-js';
-import { AppStateV2, TreeNode, ViewType, Episode } from '@/types';
+import { AppStateV2 } from '@/types/app-state';
+import { TreeNode } from '@/types/tree';
+import { ViewType } from '@/types/common';
+import { Episode } from '@/types/episode';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 
 const initialState: AppStateV2 = loadFromStorage();

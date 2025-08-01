@@ -1,6 +1,6 @@
 import { createSignal, For, Show, useContext } from 'solid-js';
 import { Key } from '@solid-primitives/keyed';
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 import { useApp, AppContext, TreeUtils } from '@/store';
 import { useToast } from '@/components/Toast';
 import TaskItem from '@/components/TaskItem';

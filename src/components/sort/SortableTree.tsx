@@ -1,5 +1,5 @@
 import { For } from 'solid-js';
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 import SortableTaskItem from '@/components/sort/SortableTaskItem';
 import SortableTaskSetItem from '@/components/sort/SortableTaskSetItem';
 import DropZone from '@/components/sort/DropZone';

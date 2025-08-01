@@ -1,5 +1,6 @@
 import { createSignal, For, Show, createMemo } from 'solid-js';
-import { TreeNode, Episode } from '@/types';
+import { TreeNode } from '@/types/tree';
+import { Episode } from '@/types/episode';
 import { useApp } from '@/store';
 import { useToast } from '@/components/Toast';
 import BatchRenameModal from '@/components/BatchRenameModal';

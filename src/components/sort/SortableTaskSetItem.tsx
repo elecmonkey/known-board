@@ -1,5 +1,5 @@
 import { Show } from 'solid-js';
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 import { createDraggable } from '@thisbeyond/solid-dnd';
 import { transformStyle } from '@thisbeyond/solid-dnd';
 import SortableTree from '@/components/sort/SortableTree';

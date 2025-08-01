@@ -1,4 +1,4 @@
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 import SortTaskItem from '@/components/sort/SortTaskItem';
 import SortTaskSetItem from '@/components/sort/SortTaskSetItem';
 

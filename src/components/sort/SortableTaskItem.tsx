@@ -1,4 +1,4 @@
-import { TreeNode } from '@/types';
+import { TreeNode } from '@/types/tree';
 import { createDraggable } from '@thisbeyond/solid-dnd';
 import { transformStyle } from '@thisbeyond/solid-dnd';
 import DragHandle from '@/components/sort/DragHandle';
