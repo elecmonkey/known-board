@@ -1,5 +1,5 @@
 import { createSignal, For, Show, createMemo } from 'solid-js';
-import { Task, Episode } from '@/types';
+import { TreeNode, Episode } from '@/types';
 import { useApp } from '@/store';
 import { useToast } from '@/components/Toast';
 import BatchRenameModal from '@/components/BatchRenameModal';
@@ -12,7 +12,7 @@ import Divider from '@/components/Divider';
 const episodeVisibilityMap = new Map<string, boolean>();
 
 interface TaskItemProps {
-  task: Task;
+  task: TreeNode;
   depth?: number;
 }
 
@@ -26,7 +26,7 @@ export default function TaskItem(props: TaskItemProps) {
   const [batchCount, setBatchCount] = createSignal(1);
   const [showBatchRenameModal, setShowBatchRenameModal] = createSignal(false);
   
-  const { updateTask, deleteTask, toggleTaskCompletion, batchRenameEpisodes } = useApp();
+  const { updateNode, deleteNode, toggleTaskCompletion, batchRenameEpisodes } = useApp();
   const { showUndoToast } = useToast();
   const depth = props.depth || 0;
   
@@ -41,10 +41,10 @@ export default function TaskItem(props: TaskItemProps) {
   };
   
   // 创建一个记忆化的episodes计数，用于检测episodes变化
-  const episodesCount = createMemo(() => props.task.episodes.length);
+  const episodesCount = createMemo(() => props.task.episodes?.length || 0);
 
   const handleSave = () => {
-    updateTask(props.task.id, {
+    updateNode(props.task.id, {
       title: editTitle(),
       description: editDescription() || undefined,
       deadline: editDeadline() || undefined,
@@ -67,7 +67,7 @@ export default function TaskItem(props: TaskItemProps) {
 
   const handleDelete = () => {
     if (confirm('确定要删除这个任务吗？')) {
-      deleteTask(props.task.id);
+      deleteNode(props.task.id);
     }
   };
 
@@ -76,15 +76,16 @@ export default function TaskItem(props: TaskItemProps) {
   };
 
   const addEpisode = () => {
+    const currentEpisodes = props.task.episodes || [];
     const newEpisode: Episode = {
       id: crypto.randomUUID(),
-      number: props.task.episodes.length + 1,
-      title: `第 ${props.task.episodes.length + 1} 集`,
+      number: currentEpisodes.length + 1,
+      title: `第 ${currentEpisodes.length + 1} 集`,
       completed: false
     };
     
-    updateTask(props.task.id, {
-      episodes: [...props.task.episodes, newEpisode]
+    updateNode(props.task.id, {
+      episodes: [...currentEpisodes, newEpisode]
     });
     // 添加分集后自动展开
     updateShowEpisodes(true);
@@ -94,8 +95,9 @@ export default function TaskItem(props: TaskItemProps) {
     const count = batchCount();
     if (count <= 0) return;
     
+    const currentEpisodes = props.task.episodes || [];
     const newEpisodes = Array.from({ length: count }, (_, i) => {
-      const number = props.task.episodes.length + i + 1;
+      const number = currentEpisodes.length + i + 1;
       return {
         id: crypto.randomUUID(),
         number,
@@ -104,8 +106,8 @@ export default function TaskItem(props: TaskItemProps) {
       };
     });
     
-    updateTask(props.task.id, {
-      episodes: [...props.task.episodes, ...newEpisodes]
+    updateNode(props.task.id, {
+      episodes: [...currentEpisodes, ...newEpisodes]
     });
     
     setBatchCount(1);
@@ -114,21 +116,23 @@ export default function TaskItem(props: TaskItemProps) {
   };
 
   const updateEpisode = (id: string, updates: Partial<Episode>) => {
-    const updatedEpisodes = props.task.episodes.map(episode =>
+    const currentEpisodes = props.task.episodes || [];
+    const updatedEpisodes = currentEpisodes.map(episode =>
       episode.id === id ? { ...episode, ...updates } : episode
     );
-    updateTask(props.task.id, { episodes: updatedEpisodes });
+    updateNode(props.task.id, { episodes: updatedEpisodes });
     // 更新分集时保持当前展开状态，不需要额外操作
   };
 
   const deleteEpisode = (id: string) => {
-    const updatedEpisodes = props.task.episodes.filter(episode => episode.id !== id);
+    const currentEpisodes = props.task.episodes || [];
+    const updatedEpisodes = currentEpisodes.filter(episode => episode.id !== id);
     // 重新编号
     const renumberedEpisodes = updatedEpisodes.map((episode, index) => ({
       ...episode,
       number: index + 1
     }));
-    updateTask(props.task.id, { episodes: renumberedEpisodes });
+    updateNode(props.task.id, { episodes: renumberedEpisodes });
     // 删除分集时保持当前展开状态，不需要额外操作
   };
 
@@ -239,13 +243,13 @@ export default function TaskItem(props: TaskItemProps) {
                         </span>
                       )}
                       
-                      {props.task.episodes.length > 0 && (
+                      {(props.task.episodes?.length || 0) > 0 && (
                         <span class={`px-2 py-1 rounded ${
-                          props.task.episodes.filter(e => e.completed).length === props.task.episodes.length
+                          (props.task.episodes || []).filter(e => e.completed).length === (props.task.episodes?.length || 0)
                             ? 'bg-green-100 text-green-800'
                             : 'bg-yellow-100 text-yellow-800'
                         }`}>
-                          分集: {props.task.episodes.filter(e => e.completed).length}/{props.task.episodes.length}
+                          分集: {(props.task.episodes || []).filter(e => e.completed).length}/{props.task.episodes?.length || 0}
                         </span>
                       )}
                     </div>
@@ -269,19 +273,19 @@ export default function TaskItem(props: TaskItemProps) {
                   </div>
                 </div>
                 
-                {props.task.episodes.length > 0 && (
+                {(props.task.episodes?.length || 0) > 0 && (
                   <div class="mt-3">
                     <button
                       onClick={toggleEpisodes}
                       class="text-sm text-gray-600 hover:text-gray-800 flex items-center"
                     >
-                      {showEpisodes() ? '收起分集' : '展开分集'} ({props.task.episodes.length})
+                      {showEpisodes() ? '收起分集' : '展开分集'} ({props.task.episodes?.length || 0})
                       <span class="ml-1">{showEpisodes() ? '▲' : '▼'}</span>
                     </button>
                   </div>
                 )}
                 
-                {!props.task.episodes.length && (
+                {!(props.task.episodes?.length || 0) && (
                   <div class="mt-3 flex items-center space-x-2">
                     <button
                       onClick={addEpisode}
@@ -360,7 +364,7 @@ export default function TaskItem(props: TaskItemProps) {
             </div>
             
             <div class="space-y-2 max-h-60 overflow-y-auto">
-              <For each={props.task.episodes}>
+              <For each={props.task.episodes || []}>
                 {(episode, index) => (
                   <>
                     <div class={`flex items-center p-2 rounded ${
@@ -409,7 +413,7 @@ export default function TaskItem(props: TaskItemProps) {
                         </button>
                       </div>
                     </div>
-                    <Show when={index() < props.task.episodes.length - 1}>
+                    <Show when={index() < (props.task.episodes?.length || 0) - 1}>
                       <Divider class="my-1 mx-2" />
                     </Show>
                   </>
@@ -426,8 +430,8 @@ export default function TaskItem(props: TaskItemProps) {
           isOpen={true}
           onClose={() => setShowBatchRenameModal(false)}
           onConfirm={handleBatchRename}
-          episodeCount={props.task.episodes.length}
-          episodes={props.task.episodes}
+          episodeCount={(props.task.episodes?.length || 0)}
+          episodes={(props.task.episodes || [])}
         />
       </Show>
     </div>

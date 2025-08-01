@@ -1,6 +1,7 @@
 import { onMount } from 'solid-js';
 import { useApp } from '@/store';
 import TaskList from '@/components/TaskList';
+import { filterRootVisibleNodes } from '@/utils/filterUtils';
 
 export default function AllTasksPage() {
   const { state, setCurrentView } = useApp();
@@ -9,18 +10,16 @@ export default function AllTasksPage() {
     setCurrentView('all');
   });
 
-  const filteredData = () => {
-    return {
-      tasks: state().tasks.filter(task => !task.parentId),
-      taskSets: state().taskSets.filter(ts => !ts.parentId)
-    };
+  const filteredNodes = () => {
+    const { children } = state();
+    // 显示所有节点（包括隐藏的任务集，但会有视觉上的区别）
+    return children;
   };
 
   return (
     <div class="max-w-4xl mx-auto">
       <TaskList 
-        tasks={filteredData().tasks} 
-        taskSets={filteredData().taskSets}
+        nodes={filteredNodes()}
         emptyState={{
           icon: '📚',
           title: '暂无任务',

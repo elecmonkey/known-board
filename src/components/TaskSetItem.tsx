@@ -1,7 +1,7 @@
 import { createSignal, For, Show, useContext } from 'solid-js';
 import { Key } from '@solid-primitives/keyed';
-import { TaskSet, Task } from '@/types';
-import { useApp, AppContext } from '@/store';
+import { TreeNode } from '@/types';
+import { useApp, AppContext, TreeUtils } from '@/store';
 import { useToast } from '@/components/Toast';
 import TaskItem from '@/components/TaskItem';
 import AddIcon from '@/components/icons/AddIcon';
@@ -13,7 +13,7 @@ import DeleteIcon from '@/components/icons/DeleteIcon';
 import Divider from '@/components/Divider';
 
 interface TaskSetItemProps {
-  taskSet: TaskSet;
+  taskSet: TreeNode;
   depth?: number;
 }
 
@@ -24,25 +24,29 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   const [editTitle, setEditTitle] = createSignal(props.taskSet.title);
   const [editDescription, setEditDescription] = createSignal(props.taskSet.description || '');
   
-  const { state, updateTaskSet, deleteTaskSet, addTaskToSet, addTaskSetToSet, toggleTaskSetHidden, currentView } = useApp();
+  const { state, updateNode, deleteNode, addChildNode, toggleTaskSetHidden, currentView } = useApp();
   const { showUndoToast } = useToast();
   const depth = props.depth || 0;
   
   // 检查是否有隐藏的祖先节点
   const hasHiddenAncestor = () => {
-    if (!props.taskSet.parentId) return false;
+    const currentState = state();
+    const parent = TreeUtils.findParent(currentState.children, props.taskSet.id);
+    if (!parent) return false;
     
-    const findParentTaskSet = (id: string): TaskSet | undefined => {
-      return state().taskSets.find(ts => ts.id === id);
-    };
+    if (parent.type === 'taskSet' && parent.hidden) return true;
     
-    let currentParentId = props.taskSet.parentId;
-    while (currentParentId) {
-      const parent = findParentTaskSet(currentParentId);
-      if (parent?.hidden) return true;
-      currentParentId = parent?.parentId;
-    }
-    return false;
+    // 递归检查更上级的父节点
+    return hasHiddenAncestorRecursive(parent.id);
+  };
+
+  const hasHiddenAncestorRecursive = (nodeId: string): boolean => {
+    const currentState = state();
+    const parent = TreeUtils.findParent(currentState.children, nodeId);
+    if (!parent) return false;
+    
+    if (parent.type === 'taskSet' && parent.hidden) return true;
+    return hasHiddenAncestorRecursive(parent.id);
   };
   
   // 只有当前TaskSet隐藏且没有隐藏的祖先时才应用透明度
@@ -51,7 +55,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   };
 
   const handleSave = () => {
-    updateTaskSet(props.taskSet.id, {
+    updateNode(props.taskSet.id, {
       title: editTitle(),
       description: editDescription() || undefined
     });
@@ -70,58 +74,48 @@ export default function TaskSetItem(props: TaskSetItemProps) {
 
   const handleDelete = () => {
     if (confirm('确定要删除这个任务集吗？')) {
-      deleteTaskSet(props.taskSet.id);
+      deleteNode(props.taskSet.id);
     }
   };
 
-  // 获取属于当前任务集的所有任务集
-  const childTaskSets = () => {
-    const childSets = state().taskSets.filter(taskSet => taskSet.parentId === props.taskSet.id);
+  // 获取当前节点的子节点，并根据视图进行过滤
+  const getFilteredChildren = () => {
+    const children = props.taskSet.children || [];
     
-    // 在待办和已完成页面中，过滤掉隐藏的子TaskSet
-    if (currentView() === 'pending' || currentView() === 'completed') {
-      return childSets.filter(taskSet => !taskSet.hidden);
-    }
-    
-    return childSets;
-  };
-
-  // 获取属于当前任务集的所有任务，并根据当前视图进行过滤
-  const childTasks = () => {
-    const tasks = state().tasks.filter(task => task.parentId === props.taskSet.id);
-    
-    switch (currentView()) {
-      case 'pending':
-        // 待办页面只显示未完成的任务
-        return tasks.filter(task => !task.completed);
-      case 'completed':
-        // 已完成页面只显示已完成的任务
-        return tasks.filter(task => task.completed);
-      case 'all':
-      default:
-        // 所有任务页面显示所有任务
-        return tasks;
-    }
+    return children.filter(child => {
+      // TaskSet 过滤逻辑
+      if (child.type === 'taskSet') {
+        // 在待办和已完成页面中，过滤掉隐藏的子TaskSet
+        if (currentView() === 'pending' || currentView() === 'completed') {
+          return !child.hidden;
+        }
+        return true; // 在全部页面显示所有TaskSet
+      }
+      
+      // Task 过滤逻辑
+      if (child.type === 'task') {
+        switch (currentView()) {
+          case 'pending':
+            return !child.completed;
+          case 'completed':
+            return child.completed === true;
+          case 'all':
+          default:
+            return true;
+        }
+      }
+      
+      return true;
+    });
   };
 
   const handleAdd = (type: 'task' | 'taskset', title: string, description?: string) => {
     if (type === 'task') {
-      const newTask: Task = {
-        id: crypto.randomUUID(),
-        title,
-        description,
-        completed: false,
-        episodes: []
-      };
-      addTaskToSet(props.taskSet.id, newTask);
+      const newTask = TreeUtils.createTaskNode(crypto.randomUUID(), title, description);
+      addChildNode(props.taskSet.id, newTask);
     } else {
-      const newTaskSet: TaskSet = {
-        id: crypto.randomUUID(),
-        title,
-        description,
-        hidden: false
-      };
-      addTaskSetToSet(props.taskSet.id, newTaskSet);
+      const newTaskSet = TreeUtils.createTaskSetNode(crypto.randomUUID(), title, description);
+      addChildNode(props.taskSet.id, newTaskSet);
     }
     setShowAddForm(false);
   };
@@ -237,25 +231,18 @@ export default function TaskSetItem(props: TaskSetItemProps) {
           />
         )}
         
-        {isExpanded() && (childTaskSets().length > 0 || childTasks().length > 0) && (
+        {isExpanded() && getFilteredChildren().length > 0 && (
           <div class="mt-2 space-y-0">
             <Divider class="my-1" />
-            <For each={childTaskSets()}>
-              {(childTaskSet, index) => (
+            <Key each={getFilteredChildren()} by={(child) => child.id}>
+              {(child, index) => (
                 <>
-                  <TaskSetItem taskSet={childTaskSet} depth={depth + 1} />
-                  <Show when={index() < childTaskSets().length - 1 || childTasks().length > 0}>
-                    <Divider class="my-1 mx-4" />
-                  </Show>
-                </>
-              )}
-            </For>
-            
-            <Key each={childTasks()} by={(task) => task.id}>
-              {(task, index) => (
-                <>
-                  <TaskItem task={task()} depth={depth + 1} />
-                  <Show when={index() < childTasks().length - 1}>
+                  {child().type === 'taskSet' ? (
+                    <TaskSetItem taskSet={child()} depth={depth + 1} />
+                  ) : (
+                    <TaskItem task={child()} depth={depth + 1} />
+                  )}
+                  <Show when={index() < getFilteredChildren().length - 1}>
                     <Divider class="my-1 mx-4" />
                   </Show>
                 </>

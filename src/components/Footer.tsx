@@ -7,15 +7,6 @@ export default function Footer() {
   
   const handleExport = () => {
     try {
-      const data = {
-        version: '1.0',
-        exportedAt: new Date().toISOString(),
-        data: {
-          tasks: state().tasks,
-          taskSets: state().taskSets
-        }
-      };
-      
       // 将时间精确到秒
       const now = new Date();
       const dateString = now.getFullYear() + 
@@ -25,7 +16,7 @@ export default function Footer() {
         String(now.getMinutes()).padStart(2, '0') +
         String(now.getSeconds()).padStart(2, '0');
       
-      exportDataAsJson(data, `known-board-export-${dateString}.json`);
+      exportDataAsJson(state(), `known-board-export-${dateString}.json`);
     } catch (error) {
       console.error('导出失败:', error);
       alert(error instanceof Error ? error.message : '导出失败');
@@ -42,20 +33,8 @@ export default function Footer() {
       if (!file) return;
       
       try {
-        const parsedData = await importDataFromJson(file);
-        
-        if (!parsedData.version || !parsedData.data) {
-          alert('无效的文件格式');
-          return;
-        }
-        
-        // 验证数据结构
-        if (!Array.isArray(parsedData.data.tasks) || !Array.isArray(parsedData.data.taskSets)) {
-          alert('数据格式不正确');
-          return;
-        }
-        
-        importData(parsedData.data);
+        const migratedData = await importDataFromJson(file);
+        importData(migratedData);
         alert('数据导入成功！');
       } catch (error) {
         console.error('导入失败:', error);

@@ -2,8 +2,8 @@ import { createSignal, onMount } from 'solid-js';
 import { useApp } from '@/store';
 import TaskList from '@/components/TaskList';
 import AddItemForm from '@/components/AddItemForm';
-import { Task, TaskSet } from '@/types';
-import { filterVisibleItems } from '@/utils/filterUtils';
+import { TreeNode } from '@/types';
+import { filterRootVisibleNodes } from '@/utils/filterUtils';
 import PlusIcon from '@/components/icons/PlusIcon';
 
 export default function PendingPage() {
@@ -14,29 +14,22 @@ export default function PendingPage() {
     setCurrentView('pending');
   });
 
-  const filteredData = () => {
-    const { tasks, taskSets } = state();
-    return filterVisibleItems(tasks, taskSets, task => !task.completed);
+  const filteredNodes = () => {
+    const { children } = state();
+    // 只显示未完成的任务，显示所有非隐藏的任务集
+    return filterRootVisibleNodes(children, (node) => {
+      if (node.type === 'task') {
+        return !node.completed;
+      }
+      return true; // 显示所有任务集
+    });
   };
 
   const handleAdd = (type: 'task' | 'taskset', title: string, description?: string) => {
     if (type === 'task') {
-      const newTask: Task = {
-        id: crypto.randomUUID(),
-        title,
-        description,
-        completed: false,
-        episodes: []
-      };
-      addTask(newTask);
+      addTask(title, description);
     } else {
-      const newTaskSet: TaskSet = {
-        id: crypto.randomUUID(),
-        title,
-        description,
-        hidden: false
-      };
-      addTaskSet(newTaskSet);
+      addTaskSet(title, description);
     }
     setShowAddForm(false);
   };
@@ -48,8 +41,7 @@ export default function PendingPage() {
   return (
     <div class="max-w-4xl mx-auto">
       <TaskList 
-        tasks={filteredData().tasks} 
-        taskSets={filteredData().taskSets}
+        nodes={filteredNodes()}
         emptyState={{
           icon: '📝',
           title: '暂无待办任务',
