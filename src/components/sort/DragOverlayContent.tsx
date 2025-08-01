@@ -1,5 +1,7 @@
 import { useDragDropContext } from '@thisbeyond/solid-dnd';
 import { TreeNode } from '@/types';
+import CheckIcon from '@/components/icons/CheckIcon';
+import HideIcon from '@/components/icons/HideIcon';
 
 export default function DragOverlayContent() {
   const [state] = useDragDropContext()!;
@@ -14,22 +16,21 @@ export default function DragOverlayContent() {
   if (!node) return null;
   
   return (
-    <div class="drag-overlay-content">
-      <div class={`flex items-center py-1.5 px-3 rounded-lg shadow-lg border ${
+    <div class="drag-overlay-content w-full max-w-4xl">
+      <div class={`flex items-center py-1.5 px-4 rounded-lg shadow-lg border w-full ${
         node.type === 'taskSet' 
           ? 'bg-blue-50 border-blue-200' 
           : 'bg-white border-gray-200'
       }`}>
-        <div class="flex items-center space-x-3 flex-1 min-w-0">
+        <div class="flex items-center space-x-2 flex-1 min-w-0">
           <span class="text-lg">{node.type === 'taskSet' ? '📁' : '📝'}</span>
           <span class="text-gray-900 font-medium truncate">{node.title}</span>
-          <span class={`text-xs px-2 py-0.5 rounded flex-shrink-0 ${
-            node.type === 'taskSet'
-              ? 'text-blue-600 bg-blue-100'
-              : 'text-gray-500 bg-gray-100'
-          }`}>
-            {node.type === 'taskSet' ? '任务集' : '任务'}
-          </span>
+          {node.type === 'task' && node.completed && (
+            <CheckIcon class="w-4 h-4 text-green-600 flex-shrink-0" />
+          )}
+          {node.type === 'taskSet' && node.hidden && (
+            <HideIcon class="w-4 h-4 text-gray-500 flex-shrink-0" />
+          )}
         </div>
         <div class="drag-handle opacity-50">
           <svg 

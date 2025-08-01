@@ -17,7 +17,7 @@ export default function DropZone(props: DropZoneProps) {
     <div
       use:droppable
       class={`drop-zone ${droppable.isActiveDroppable ? 'active' : ''}`}
-      style={{ 'margin-left': props.parentId ? '24px' : '0px' }}
+      style={{ 'margin-left': props.parentId ? '16px' : '0px' }}
     >
       <div class="drop-indicator" />
     </div>
