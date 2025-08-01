@@ -204,7 +204,17 @@ export function AppProvider(props: { children: JSX.Element }) {
       if (!nodeToMove) return prev;
       
       // 从原位置删除
-      deleteNode(nodeId);
+      newState.children = newState.children.filter(node => node.id !== nodeId);
+      
+      const removeFromChildren = (children: TreeNode[]) => {
+        for (const node of children) {
+          if (node.children) {
+            node.children = node.children.filter(child => child.id !== nodeId);
+            removeFromChildren(node.children);
+          }
+        }
+      };
+      removeFromChildren(newState.children);
       
       // 添加到新位置
       if (newParentId) {
