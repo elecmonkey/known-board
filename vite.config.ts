@@ -3,8 +3,10 @@ import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 import path from 'path';
 
+import { prefetchManifest } from './plugin/prefetchManifest';
+
 export default defineConfig({
-  plugins: [solidPlugin(), tailwindcss()],
+  plugins: [solidPlugin(), tailwindcss(), prefetchManifest()],
   server: {
     port: 3000,
   },

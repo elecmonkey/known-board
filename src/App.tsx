@@ -4,7 +4,7 @@ import { Router, Route } from '@solidjs/router';
 import { AppProvider } from '@/store';
 import { ToastProvider } from '@/components/Toast';
 import Layout from '@/components/Layout';
-import { preloadAllPages } from '@/routes-preload';
+import { startPreload } from '@/utils/preloader';
 
 const PendingPage = lazy(() => import('@/pages/PendingPage'));
 const CompletedPage = lazy(() => import('@/pages/CompletedPage'));
@@ -14,12 +14,7 @@ const AboutPage = lazy(() => import('@/pages/AboutPage'));
 const GuidePage = lazy(() => import('@/pages/GuidePage'));
 
 const App: Component = () => {
-  onMount(() => {
-    setTimeout(() => {
-      // 排除首屏页面 PendingPage.tsx
-      preloadAllPages('PendingPage.tsx');
-    }, 500);
-  });
+  onMount(startPreload);
 
   return (
     <AppProvider>
