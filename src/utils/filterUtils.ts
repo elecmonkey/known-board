@@ -62,10 +62,9 @@ export const filterVisibleNodes = (
         ...node,
         children: filteredChildren
       });
-    } else if (filteredChildren.length > 0) {
-      // 如果当前节点不显示但有可见的子节点，只包含子节点
-      acc.push(...filteredChildren);
     }
+    // 移除了隐藏taskSet子节点提升的逻辑
+    // 隐藏的taskSet及其所有子孙后代都应该完全不显示
 
     return acc;
   }, []);
