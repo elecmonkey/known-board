@@ -80,21 +80,6 @@ export default function TaskItem(props: TaskItemProps) {
     updateShowEpisodes(prev => !prev);
   };
 
-  const addEpisode = () => {
-    const currentEpisodes = props.task.episodes || [];
-    const newEpisode: Episode = {
-      id: crypto.randomUUID(),
-      number: currentEpisodes.length + 1,
-      title: `第 ${currentEpisodes.length + 1} 集`,
-      completed: false
-    };
-    
-    updateNode(props.task.id, {
-      episodes: [...currentEpisodes, newEpisode]
-    });
-    // 添加分集后自动展开
-    updateShowEpisodes(true);
-  };
 
   const addBatchEpisodes = () => {
     const count = batchCount();
@@ -296,15 +281,7 @@ export default function TaskItem(props: TaskItemProps) {
                 )}
                 
                 {!(props.task.episodes?.length || 0) && (
-                  <div class="mt-3 flex items-center space-x-2">
-                    <button
-                      onClick={addEpisode}
-                      class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
-                    >
-                      <PlusIcon class="w-4 h-4 mr-1" />
-                      添加分集
-                    </button>
-                    <span class="text-gray-300">|</span>
+                  <div class="mt-3">
                     <div class="flex items-center space-x-2">
                       <input
                         type="number"
@@ -319,7 +296,7 @@ export default function TaskItem(props: TaskItemProps) {
                         class="text-sm text-green-600 hover:text-green-800 flex items-center"
                       >
                         <PlusIcon class="w-4 h-4 mr-1" />
-                        批量创建
+                        批量创建分集
                       </button>
                     </div>
                   </div>
@@ -335,14 +312,6 @@ export default function TaskItem(props: TaskItemProps) {
             <div class="flex justify-between items-center">
               <h4 class="font-medium text-gray-700">分集列表</h4>
               <div class="flex space-x-2">
-                <button
-                  onClick={addEpisode}
-                  class="text-xs text-blue-600 hover:text-blue-800 flex items-center"
-                >
-                  <PlusIcon class="w-3 h-3 mr-1" />
-                  添加分集
-                </button>
-                <span class="text-gray-300">|</span>
                 <div class="flex items-center space-x-1">
                   <input
                     type="number"
@@ -360,16 +329,13 @@ export default function TaskItem(props: TaskItemProps) {
                     批量创建
                   </button>
                 </div>
-                <Show when={props.task.episodes.length > 0}>
-                  <span class="text-gray-300">|</span>
-                  <button
-                    onClick={() => setShowBatchRenameModal(true)}
-                    class="text-xs text-purple-600 hover:text-purple-800 flex items-center"
-                  >
-                    <EditIcon class="w-3 h-3 mr-1" />
-                    批量命名
-                  </button>
-                </Show>
+                <button
+                  onClick={() => setShowBatchRenameModal(true)}
+                  class="text-xs text-purple-600 hover:text-purple-800 flex items-center"
+                >
+                  <EditIcon class="w-3 h-3 mr-1" />
+                  批量命名
+                </button>
               </div>
             </div>
             
@@ -423,9 +389,6 @@ export default function TaskItem(props: TaskItemProps) {
                         </button>
                       </div>
                     </div>
-                    <Show when={index() < (props.task.episodes?.length || 0) - 1}>
-                      <Divider class="my-1 mx-2" />
-                    </Show>
                   </>
                 )}
               </For>
