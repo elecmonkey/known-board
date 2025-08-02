@@ -8,6 +8,7 @@ import EditIcon from '@/components/icons/EditIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
 import PlusIcon from '@/components/icons/PlusIcon';
 import Divider from '@/components/Divider';
+import CreateNewIcon from './icons/CreateNewIcon';
 
 // 使用Map来存储每个任务的展开状态，避免组件重新渲染时丢失
 const episodeVisibilityMap = new Map<string, boolean>();
@@ -295,8 +296,8 @@ export default function TaskItem(props: TaskItemProps) {
                         onClick={addBatchEpisodes}
                         class="text-sm text-green-600 hover:text-green-800 flex items-center"
                       >
-                        <PlusIcon class="w-4 h-4 mr-1" />
-                        批量创建分集
+                        <CreateNewIcon class="w-4 h-4 mr-1" />
+                        分集
                       </button>
                     </div>
                   </div>
@@ -325,17 +326,20 @@ export default function TaskItem(props: TaskItemProps) {
                     onClick={addBatchEpisodes}
                     class="text-xs text-green-600 hover:text-green-800 flex items-center"
                   >
-                    <PlusIcon class="w-3 h-3 mr-1" />
-                    批量创建
+                    <CreateNewIcon class="w-3 h-3 mr-1" />
+                    分集
                   </button>
                 </div>
-                <button
-                  onClick={() => setShowBatchRenameModal(true)}
-                  class="text-xs text-purple-600 hover:text-purple-800 flex items-center"
-                >
-                  <EditIcon class="w-3 h-3 mr-1" />
-                  批量命名
-                </button>
+                <Show when={props.task.episodes.length > 0}>
+                  <span class="text-gray-300">|</span>
+                  <button
+                    onClick={() => setShowBatchRenameModal(true)}
+                    class="text-xs text-purple-600 hover:text-purple-800 flex items-center"
+                  >
+                    <EditIcon class="w-3 h-3 mr-1" />
+                    批量命名
+                  </button>
+                </Show>
               </div>
             </div>
             
@@ -389,6 +393,9 @@ export default function TaskItem(props: TaskItemProps) {
                         </button>
                       </div>
                     </div>
+                    <Show when={index() < (props.task.episodes?.length || 0) - 1}>
+                      <Divider class="my-1 mx-2" />
+                    </Show>
                   </>
                 )}
               </For>
