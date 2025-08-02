@@ -44,13 +44,17 @@ export default function TaskItem(props: TaskItemProps) {
   // 创建一个记忆化的episodes计数，用于检测episodes变化
   const episodesCount = createMemo(() => props.task.episodes?.length || 0);
 
-  const handleSave = () => {
-    updateNode(props.task.id, {
+  const saveChanges = () => {
+    const updatedTask = {
+      ...props.task,
       title: editTitle(),
-      description: editDescription() || undefined,
-      deadline: editDeadline() || undefined,
-      videoUrl: editVideoUrl() || undefined
-    });
+      description: editDescription(),
+      deadline: editDeadline(),
+      videoUrl: (editVideoUrl().startsWith('http') 
+        ? editVideoUrl() 
+        : 'http://' + editVideoUrl()) || null
+    }
+    updateNode(props.task.id, updatedTask);
     setIsEditing(false);
   };
 
@@ -200,7 +204,7 @@ export default function TaskItem(props: TaskItemProps) {
                 
                 <div class="flex space-x-2">
                   <button
-                    onClick={handleSave}
+                    onClick={saveChanges}
                     class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
                   >
                     保存
