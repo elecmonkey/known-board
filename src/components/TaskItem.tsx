@@ -195,7 +195,7 @@ export default function TaskItem(props: TaskItemProps) {
                   value={editVideoUrl()}
                   onInput={(e) => setEditVideoUrl(e.target.value)}
                   class="w-full px-2 py-1 border border-gray-300 rounded"
-                  placeholder="视频链接或说明"
+                  placeholder="学习资源链接（可选）"
                 />
                 
                 <div class="flex space-x-2">
@@ -239,9 +239,14 @@ export default function TaskItem(props: TaskItemProps) {
                       )}
                       
                       {props.task.videoUrl && (
-                        <span class="px-2 py-1 rounded bg-purple-100 text-purple-800">
-                          🎥 视频
-                        </span>
+                        <a 
+                          href={props.task.videoUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          class="px-2 py-1 rounded bg-purple-100 text-purple-800 hover:bg-purple-200 hover:underline text-xs"
+                        >
+                          🔗 打开链接
+                        </a>
                       )}
                       
                       {(props.task.episodes?.length || 0) > 0 && (
