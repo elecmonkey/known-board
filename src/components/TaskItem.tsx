@@ -297,7 +297,7 @@ export default function TaskItem(props: TaskItemProps) {
                     </div>
                   </div>
                   
-                  <div class="flex space-x-1">
+                  <div class="flex space-x-2">
                     <button
                       onClick={() => setIsEditing(true)}
                       class="text-blue-600 hover:text-blue-800 p-1"
