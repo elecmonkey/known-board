@@ -46,14 +46,18 @@ export default function TaskItem(props: TaskItemProps) {
   const episodesCount = createMemo(() => props.task.episodes?.length || 0);
 
   const saveChanges = () => {
+    let videoUrlValue = editVideoUrl().trim();
+    // 只有在有内容的情况下才添加http://前缀
+    if (videoUrlValue && !videoUrlValue.startsWith('http')) {
+      videoUrlValue = 'http://' + videoUrlValue;
+    }
+    
     const updatedTask = {
       ...props.task,
       title: editTitle(),
       description: editDescription(),
       deadline: editDeadline(),
-      videoUrl: (editVideoUrl().startsWith('http') 
-        ? editVideoUrl() 
-        : 'http://' + editVideoUrl()) || null
+      videoUrl: videoUrlValue || null
     }
     updateNode(props.task.id, updatedTask);
     setIsEditing(false);
@@ -133,6 +137,10 @@ export default function TaskItem(props: TaskItemProps) {
     return date.toLocaleDateString('zh-CN');
   };
 
+  // feat(TaskItem): 优化任务截止日期的显示逻辑
+  // - 新增 getDeadlineInfo 函数，用于计算截止日期的相关信息
+  // - 根据任务是否完成和截止日期的状态，动态显示不同的颜色和提示信息
+  // - 修复了任务完成后截止日期仍显示为蓝色的问题
   const getDeadlineInfo = (deadlineString?: string) => {
     if (!deadlineString) return null;
     
