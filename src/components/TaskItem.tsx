@@ -133,6 +133,35 @@ export default function TaskItem(props: TaskItemProps) {
     return date.toLocaleDateString('zh-CN');
   };
 
+  const getDeadlineInfo = (deadlineString?: string) => {
+    if (!deadlineString) return null;
+    
+    const deadline = new Date(deadlineString);
+    const today = new Date();
+    // 将今天的日期设置为当天的开始时间
+    today.setHours(0, 0, 0, 0);
+    
+    // 将截止日期设置为当天的开始时间
+    const deadlineDate = new Date(deadline.getFullYear(), deadline.getMonth(), deadline.getDate());
+    
+    const diffTime = deadlineDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays >= 0) {
+      return {
+        isOverdue: false,
+        days: diffDays,
+        text: `还剩${diffDays}天`
+      };
+    } else {
+      return {
+        isOverdue: true,
+        days: Math.abs(diffDays),
+        text: `已超${Math.abs(diffDays)}天`
+      };
+    }
+  };
+
   const handleBatchRename = (names: string[]) => {
     batchRenameEpisodes(props.task.id, names, showUndoToast);
   };
@@ -216,17 +245,20 @@ export default function TaskItem(props: TaskItemProps) {
                     )}
                     
                     <div class="flex flex-wrap gap-2 mt-2 text-xs">
-                      {props.task.deadline && (
-                        <span class={`px-2 py-1 rounded ${
-                          props.task.completed 
-                            ? 'bg-green-100 text-green-800' 
-                            : new Date(props.task.deadline) < new Date() 
-                              ? 'bg-red-100 text-red-800' 
-                              : 'bg-blue-100 text-blue-800'
-                        }`}>
-                          截止: {formatDate(props.task.deadline)}
-                        </span>
-                      )}
+                      {props.task.deadline && (() => {
+                        const deadlineInfo = getDeadlineInfo(props.task.deadline);
+                        return deadlineInfo ? (
+                          <span class={`px-2 py-1 rounded ${
+                            props.task.completed 
+                              ? 'bg-green-100 text-green-800' 
+                              : deadlineInfo.isOverdue
+                                ? 'bg-red-100 text-red-800' 
+                                : 'bg-green-100 text-green-800'
+                          }`}>
+                            截止: {formatDate(props.task.deadline)} ({deadlineInfo.text})
+                          </span>
+                        ) : null;
+                      })()}
                       
                       {props.task.videoUrl && (
                         <a 
