@@ -6,6 +6,36 @@ import { ViewType } from '@/types/common';
 import { Episode } from '@/types/episode';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 
+// 滚动位置保存工具
+class ScrollPositionManager {
+  private scrollPositions = new Map<string, number>();
+
+  // 保存所有显示且展开的episode列表的滚动位置
+  saveAllEpisodeScrollPositions() {
+    const containers = document.querySelectorAll('[data-episode-scroll-container]');
+    containers.forEach(container => {
+      const taskId = container.getAttribute('data-task-id');
+      if (taskId && container instanceof HTMLElement) {
+        this.scrollPositions.set(taskId, container.scrollTop);
+      }
+    });
+  }
+
+  // 恢复所有episode列表的滚动位置
+  restoreAllEpisodeScrollPositions() {
+    const containers = document.querySelectorAll('[data-episode-scroll-container]');
+    containers.forEach(container => {
+      const taskId = container.getAttribute('data-task-id');
+      if (taskId && container instanceof HTMLElement) {
+        const savedPosition = this.scrollPositions.get(taskId) || 0;
+        container.scrollTop = savedPosition;
+      }
+    });
+  }
+}
+
+const scrollPositionManager = new ScrollPositionManager();
+
 const initialState: AppStateV2 = loadFromStorage();
 
 // 树形数据操作工具函数
@@ -177,6 +207,9 @@ export function AppProvider(props: { children: JSX.Element }) {
   };
 
   const deleteNode = (id: string) => {
+    // 保存当前所有episode列表的滚动位置
+    scrollPositionManager.saveAllEpisodeScrollPositions();
+    
     setState(produce(state => {
       // 从根级别删除
       state.children = state.children.filter(node => node.id !== id);
@@ -193,6 +226,9 @@ export function AppProvider(props: { children: JSX.Element }) {
       
       removeFromChildren(state.children);
     }));
+    
+    // 恢复滚动位置
+    scrollPositionManager.restoreAllEpisodeScrollPositions();
   };
 
   const moveNode = (nodeId: string, newParentId?: string, newIndex?: number) => {
@@ -301,8 +337,14 @@ export function AppProvider(props: { children: JSX.Element }) {
     const previousCompleted = task.completed || false;
     const newCompleted = !previousCompleted;
     
+    // 保存当前所有episode列表的滚动位置
+    scrollPositionManager.saveAllEpisodeScrollPositions();
+    
     // 立即更新任务状态
     updateNode(id, { completed: newCompleted });
+    
+    // 恢复滚动位置
+    scrollPositionManager.restoreAllEpisodeScrollPositions();
     
     // 显示撤销提示
     if (showToast) {
@@ -312,7 +354,10 @@ export function AppProvider(props: { children: JSX.Element }) {
         
       showToast(message, () => {
         // 撤销操作：恢复之前的完成状态
+        // 撤销时也要保存和恢复滚动位置
+        scrollPositionManager.saveAllEpisodeScrollPositions();
         updateNode(id, { completed: previousCompleted });
+        scrollPositionManager.restoreAllEpisodeScrollPositions();
       });
     }
   };

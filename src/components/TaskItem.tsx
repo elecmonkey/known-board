@@ -17,6 +17,9 @@ import VideoUrlInput from '@/components/form/VideoUrlInput';
 // 使用Map来存储每个任务的展开状态，避免组件重新渲染时丢失
 const episodeVisibilityMap = new Map<string, boolean>();
 
+// 使用Map来存储每个任务的episode列表滚动位置，避免重渲染时丢失滚动位置
+const episodeScrollPositionMap = new Map<string, number>();
+
 interface TaskItemProps {
   task: Task;
   depth?: number;
@@ -394,7 +397,11 @@ export default function TaskItem(props: TaskItemProps) {
               </div>
             </div>
             
-            <div class="space-y-2 max-h-60 overflow-y-auto">
+            <div 
+              class="space-y-2 max-h-60 overflow-y-auto"
+              data-episode-scroll-container
+              data-task-id={props.task.id}
+            >
               <Key each={props.task.episodes || []} by={(episode) => episode.id}>
                 {(episode, index) => (
                   <>
