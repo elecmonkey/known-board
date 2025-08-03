@@ -143,12 +143,16 @@ export default function TaskSetItem(props: TaskSetItemProps) {
               <div class="flex-1">
                 <input
                   type="text"
+                  id={`taskset-title-${props.taskSet.id}`}
+                  name={`taskset-title-${props.taskSet.id}`}
                   value={editTitle()}
                   onInput={(e) => setEditTitle(e.target.value)}
                   class="w-full px-2 py-1 border border-gray-300 rounded mb-2"
                   placeholder="任务集标题"
                 />
                 <textarea
+                  id={`taskset-description-${props.taskSet.id}`}
+                  name={`taskset-description-${props.taskSet.id}`}
                   value={editDescription()}
                   onInput={(e) => setEditDescription(e.target.value)}
                   class="w-full px-2 py-1 border border-gray-300 rounded resize-none"

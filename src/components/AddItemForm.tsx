@@ -36,7 +36,8 @@ export default function AddItemForm(props: AddItemFormProps) {
           <label class="flex items-center">
             <input
               type="radio"
-              name="type"
+              id="add-form-type-task"
+              name="add-form-type"
               checked={addType() === 'task'}
               onChange={() => setAddType('task')}
               class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
@@ -46,7 +47,8 @@ export default function AddItemForm(props: AddItemFormProps) {
           <label class="flex items-center">
             <input
               type="radio"
-              name="type"
+              id="add-form-type-taskset"
+              name="add-form-type"
               checked={addType() === 'taskset'}
               onChange={() => setAddType('taskset')}
               class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
@@ -58,6 +60,8 @@ export default function AddItemForm(props: AddItemFormProps) {
         <div>
           <input
             type="text"
+            id="add-form-title"
+            name="add-form-title"
             value={newTitle()}
             onInput={(e) => setNewTitle(e.target.value)}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -67,6 +71,8 @@ export default function AddItemForm(props: AddItemFormProps) {
         
         <div>
           <textarea
+            id="add-form-description"
+            name="add-form-description"
             value={newDescription()}
             onInput={(e) => setNewDescription(e.target.value)}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"

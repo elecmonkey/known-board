@@ -197,6 +197,8 @@ export default function TaskItem(props: TaskItemProps) {
               <div class="space-y-3">
                 <input
                   type="text"
+                  id={`task-title-${props.task.id}`}
+                  name={`task-title-${props.task.id}`}
                   value={editTitle()}
                   onInput={(e) => setEditTitle(e.target.value)}
                   class="w-full px-2 py-1 border border-gray-300 rounded"
@@ -204,6 +206,8 @@ export default function TaskItem(props: TaskItemProps) {
                 />
                 
                 <textarea
+                  id={`task-description-${props.task.id}`}
+                  name={`task-description-${props.task.id}`}
                   value={editDescription()}
                   onInput={(e) => setEditDescription(e.target.value)}
                   class="w-full px-2 py-1 border border-gray-300 rounded resize-none"
@@ -213,6 +217,8 @@ export default function TaskItem(props: TaskItemProps) {
                 
                 <input
                   type="date"
+                  id={`task-deadline-${props.task.id}`}
+                  name={`task-deadline-${props.task.id}`}
                   value={editDeadline()}
                   onInput={(e) => setEditDeadline(e.target.value)}
                   class="px-2 py-1 border border-gray-300 rounded"
@@ -220,6 +226,8 @@ export default function TaskItem(props: TaskItemProps) {
                 
                 <input
                   type="text"
+                  id={`task-video-url-${props.task.id}`}
+                  name={`task-video-url-${props.task.id}`}
                   value={editVideoUrl()}
                   onInput={(e) => setEditVideoUrl(e.target.value)}
                   class="w-full px-2 py-1 border border-gray-300 rounded"
@@ -327,6 +335,8 @@ export default function TaskItem(props: TaskItemProps) {
                     <div class="flex items-center space-x-2">
                       <input
                         type="number"
+                        id={`task-batch-count-${props.task.id}`}
+                        name={`task-batch-count-${props.task.id}`}
                         min="1"
                         max="100"
                         value={batchCount()}
@@ -357,6 +367,8 @@ export default function TaskItem(props: TaskItemProps) {
                 <div class="flex items-center space-x-1">
                   <input
                     type="number"
+                    id={`task-batch-count-expanded-${props.task.id}`}
+                    name={`task-batch-count-expanded-${props.task.id}`}
                     min="1"
                     max="100"
                     value={batchCount()}
