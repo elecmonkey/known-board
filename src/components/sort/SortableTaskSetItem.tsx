@@ -23,7 +23,7 @@ export default function SortableTaskSetItem(props: SortableTaskSetItemProps) {
     <div
       class={`sortable-taskset-item ${draggable.isActiveDraggable ? 'dragging' : ''}`}
       style={{ 
-        'margin-left': `${props.level * 16}px`,
+        'margin-left': `${props.level == 0 ? 0 : 16}px`,
         transform: draggable.transform ? transformStyle(draggable.transform).transform : undefined,
         opacity: draggable.isActiveDraggable ? 0.5 : 1,
         transition: draggable.isActiveDraggable ? 'none' : 'transform 200ms ease'
@@ -48,7 +48,7 @@ export default function SortableTaskSetItem(props: SortableTaskSetItemProps) {
       </div>
       
       {/* TaskSet内部的放置区域 - 即使没有子元素也要显示 */}
-      <div class="ml-4 border-l-2 border-gray-100 pl-2 min-h-[20px]">
+      <div class="ml-4 border-l-2 border-gray-100 min-h-[20px]">
         <Show when={!hasChildren()}>
           {/* 空TaskSet的放置区域 */}
           <DropZone parentId={props.node.id} index={0} />
