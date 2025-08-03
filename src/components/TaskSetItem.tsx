@@ -12,17 +12,28 @@ import ShowIcon from '@/components/icons/ShowIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
 import Divider from '@/components/Divider';
 
+// 使用Map来存储每个TaskSet的展开状态，避免组件重新渲染时丢失
+const taskSetExpandedMap = new Map<string, boolean>();
+
 interface TaskSetItemProps {
   taskSet: TaskSet;
   depth?: number;
 }
 
 export default function TaskSetItem(props: TaskSetItemProps) {
-  const [isExpanded, setIsExpanded] = createSignal(true);
+  // 在组件挂载时从Map中恢复展开状态，默认为true
+  const [isExpanded, setIsExpanded] = createSignal(taskSetExpandedMap.get(props.taskSet.id) ?? true);
   const [isEditing, setIsEditing] = createSignal(false);
   const [showAddForm, setShowAddForm] = createSignal(false);
   const [editTitle, setEditTitle] = createSignal(props.taskSet.title);
   const [editDescription, setEditDescription] = createSignal(props.taskSet.description || '');
+  
+  // 更新Map中的状态
+  const updateIsExpanded = (value: boolean | ((prev: boolean) => boolean)) => {
+    const newValue = typeof value === 'function' ? value(isExpanded()) : value;
+    setIsExpanded(newValue);
+    taskSetExpandedMap.set(props.taskSet.id, newValue);
+  };
   
   const { state, updateNode, deleteNode, addChildNode, toggleTaskSetHidden, currentView } = useApp();
   const { showUndoToast } = useToast();
@@ -133,7 +144,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
         <div class="flex items-center justify-between">
           <div class="flex items-center flex-1">
             <button
-              onClick={() => setIsExpanded(!isExpanded())}
+              onClick={() => updateIsExpanded(!isExpanded())}
               class="text-gray-400 hover:text-gray-600 mr-2"
             >
               {isExpanded() ? '📂' : '📁'}
