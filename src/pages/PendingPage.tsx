@@ -25,9 +25,9 @@ export default function PendingPage() {
     });
   };
 
-  const handleAdd = (type: 'task' | 'taskset', title: string, description?: string) => {
+  const handleAdd = (type: 'task' | 'taskset', title: string, description?: string, deadline?: string, videoUrl?: string) => {
     if (type === 'task') {
-      addTask(title, description);
+      addTask(title, description, deadline, videoUrl);
     } else {
       addTaskSet(title, description);
     }

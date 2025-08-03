@@ -80,12 +80,14 @@ export class TreeUtils {
   /**
    * 创建新的任务节点
    */
-  static createTaskNode(id: string, title: string, description?: string): TreeNode {
+  static createTaskNode(id: string, title: string, description?: string, deadline?: string, videoUrl?: string): TreeNode {
     return {
       type: 'task',
       id,
       title,
       description,
+      deadline,
+      videoUrl,
       completed: false,
       episodes: []
     };
@@ -120,9 +122,9 @@ export const AppContext = createContext<{
   moveNode: (nodeId: string, newParentId?: string, newIndex?: number) => void;
   
   // 便捷方法
-  addTask: (title: string, description?: string) => void;
+  addTask: (title: string, description?: string, deadline?: string, videoUrl?: string) => void;
   addTaskSet: (title: string, description?: string) => void;
-  addTaskToSet: (parentId: string, title: string, description?: string) => void;
+  addTaskToSet: (parentId: string, title: string, description?: string, deadline?: string, videoUrl?: string) => void;
   addTaskSetToSet: (parentId: string, title: string, description?: string) => void;
   
   // 兼容旧API的方法 (将在后续版本中废弃)
@@ -282,8 +284,8 @@ export function AppProvider(props: { children: JSX.Element }) {
   };
 
   // 便捷方法
-  const addTask = (title: string, description?: string) => {
-    const newTask = TreeUtils.createTaskNode(crypto.randomUUID(), title, description);
+  const addTask = (title: string, description?: string, deadline?: string, videoUrl?: string) => {
+    const newTask = TreeUtils.createTaskNode(crypto.randomUUID(), title, description, deadline, videoUrl);
     addRootNode(newTask);
   };
 
@@ -292,8 +294,8 @@ export function AppProvider(props: { children: JSX.Element }) {
     addRootNode(newTaskSet);
   };
 
-  const addTaskToSet = (parentId: string, title: string, description?: string) => {
-    const newTask = TreeUtils.createTaskNode(crypto.randomUUID(), title, description);
+  const addTaskToSet = (parentId: string, title: string, description?: string, deadline?: string, videoUrl?: string) => {
+    const newTask = TreeUtils.createTaskNode(crypto.randomUUID(), title, description, deadline, videoUrl);
     addChildNode(parentId, newTask);
   };
 

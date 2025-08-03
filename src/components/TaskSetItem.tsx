@@ -109,9 +109,9 @@ export default function TaskSetItem(props: TaskSetItemProps) {
     });
   };
 
-  const handleAdd = (type: 'task' | 'taskset', title: string, description?: string) => {
+  const handleAdd = (type: 'task' | 'taskset', title: string, description?: string, deadline?: string, videoUrl?: string) => {
     if (type === 'task') {
-      const newTask = TreeUtils.createTaskNode(crypto.randomUUID(), title, description);
+      const newTask = TreeUtils.createTaskNode(crypto.randomUUID(), title, description, deadline, videoUrl);
       addChildNode(props.taskSet.id, newTask);
     } else {
       const newTaskSet = TreeUtils.createTaskSetNode(crypto.randomUUID(), title, description);

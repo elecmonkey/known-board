@@ -10,6 +10,8 @@ import PlusIcon from '@/components/icons/PlusIcon';
 import Divider from '@/components/Divider';
 import CreateNewIcon from './icons/CreateNewIcon';
 import BatchRenameIcon from './icons/BatchRenameIcon';
+import DeadlineInput from '@/components/form/DeadlineInput';
+import VideoUrlInput from '@/components/form/VideoUrlInput';
 
 // 使用Map来存储每个任务的展开状态，避免组件重新渲染时丢失
 const episodeVisibilityMap = new Map<string, boolean>();
@@ -215,71 +217,18 @@ export default function TaskItem(props: TaskItemProps) {
                   placeholder="描述（可选）"
                 />
                 
-                <div class="flex flex-wrap items-center gap-2">
-                  <input
-                    type="date"
-                    id={`task-deadline-${props.task.id}`}
-                    name={`task-deadline-${props.task.id}`}
-                    value={editDeadline()}
-                    onInput={(e) => setEditDeadline(e.target.value)}
-                    class="w-40 px-2 py-1 border border-gray-300 rounded"
-                  />
-                  <div class="flex flex-wrap gap-y-2 space-x-1 items-center">
-                    <label class="text-sm font-medium text-gray-700 whitespace-nowrap">截止</label>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const today = new Date();
-                        setEditDeadline(today.toISOString().split('T')[0]);
-                      }}
-                      class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
-                    >
-                      今天
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const tomorrow = new Date();
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        setEditDeadline(tomorrow.toISOString().split('T')[0]);
-                      }}
-                      class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded hover:bg-green-200"
-                    >
-                      明天
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const oneWeek = new Date();
-                        oneWeek.setDate(oneWeek.getDate() + 7);
-                        setEditDeadline(oneWeek.toISOString().split('T')[0]);
-                      }}
-                      class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded hover:bg-yellow-200"
-                    >
-                      1周后
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const oneMonth = new Date();
-                        oneMonth.setMonth(oneMonth.getMonth() + 1);
-                        setEditDeadline(oneMonth.toISOString().split('T')[0]);
-                      }}
-                      class="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded hover:bg-purple-200"
-                    >
-                      1个月后
-                    </button>
-                  </div>
-                </div>
+                <DeadlineInput 
+                  id={`task-deadline-${props.task.id}`}
+                  name={`task-deadline-${props.task.id}`}
+                  value={editDeadline()}
+                  onInput={setEditDeadline}
+                />
                 
-                <input
-                  type="text"
+                <VideoUrlInput 
                   id={`task-video-url-${props.task.id}`}
                   name={`task-video-url-${props.task.id}`}
                   value={editVideoUrl()}
-                  onInput={(e) => setEditVideoUrl(e.target.value)}
-                  class="w-full px-2 py-1 border border-gray-300 rounded"
-                  placeholder="学习资源链接（可选）"
+                  onInput={setEditVideoUrl}
                 />
                 
                 <div class="flex space-x-3">

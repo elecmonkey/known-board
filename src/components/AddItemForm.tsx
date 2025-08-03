@@ -1,7 +1,9 @@
-import { createSignal } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
+import DeadlineInput from '@/components/form/DeadlineInput';
+import VideoUrlInput from '@/components/form/VideoUrlInput';
 
 interface AddItemFormProps {
-  onAdd: (type: 'task' | 'taskset', title: string, description?: string) => void;
+  onAdd: (type: 'task' | 'taskset', title: string, description?: string, deadline?: string, videoUrl?: string) => void;
   onCancel: () => void;
   title?: string;
   placeholder?: string;
@@ -11,20 +13,32 @@ export default function AddItemForm(props: AddItemFormProps) {
   const [addType, setAddType] = createSignal<'task' | 'taskset'>('task');
   const [newTitle, setNewTitle] = createSignal('');
   const [newDescription, setNewDescription] = createSignal('');
+  const [newDeadline, setNewDeadline] = createSignal('');
+  const [newVideoUrl, setNewVideoUrl] = createSignal('');
   
   // 为每个AddItemForm实例生成唯一ID
   const formId = crypto.randomUUID();
 
   const handleAdd = () => {
     if (!newTitle().trim()) return;
-    props.onAdd(addType(), newTitle(), newDescription() || undefined);
+    props.onAdd(
+      addType(), 
+      newTitle(), 
+      newDescription() || undefined,
+      newDeadline() || undefined,
+      newVideoUrl() || undefined
+    );
     setNewTitle('');
     setNewDescription('');
+    setNewDeadline('');
+    setNewVideoUrl('');
   };
 
   const handleCancel = () => {
     setNewTitle('');
     setNewDescription('');
+    setNewDeadline('');
+    setNewVideoUrl('');
     props.onCancel();
   };
 
@@ -83,6 +97,26 @@ export default function AddItemForm(props: AddItemFormProps) {
             placeholder="描述（可选）"
           />
         </div>
+        
+        <Show when={addType() === 'task'}>
+          <div>
+            <DeadlineInput 
+              id={`add-form-deadline-${formId}`}
+              name={`add-form-deadline-${formId}`}
+              value={newDeadline()}
+              onInput={setNewDeadline}
+            />
+          </div>
+          
+          <div>
+            <VideoUrlInput 
+              id={`add-form-video-url-${formId}`}
+              name={`add-form-video-url-${formId}`}
+              value={newVideoUrl()}
+              onInput={setNewVideoUrl}
+            />
+          </div>
+        </Show>
         
         <div class="flex space-x-3">
           <button
