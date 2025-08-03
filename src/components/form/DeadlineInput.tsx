@@ -30,14 +30,17 @@ export default function DeadlineInput(props: DeadlineInputProps) {
 
   return (
     <div class="flex flex-wrap items-center gap-2">
-      <input
-        type="date"
-        id={props.id}
-        name={props.name}
-        value={props.value}
-        onInput={(e) => props.onInput(e.target.value)}
-        class="w-40 px-2 py-1 border border-gray-300 rounded"
-      />
+      <div class="flex items-center">
+        <input
+          type="date"
+          id={props.id}
+          name={props.name}
+          value={props.value}
+          onInput={(e) => props.onInput(e.target.value)}
+          class="w-40 px-2 py-1 border border-gray-300 rounded"
+        />
+        <span class="text-sm text-gray-500">（可选）</span>
+      </div>
       <div class="flex space-x-1 items-center">
         <label class="text-sm font-medium text-gray-700 whitespace-nowrap">截止</label>
         <button
