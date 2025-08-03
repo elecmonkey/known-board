@@ -10,10 +10,14 @@ import SortableTree from '@/components/sort/SortableTree';
 import DragOverlayContent from '@/components/sort/DragOverlayContent';
 import '@/components/sort/sort.css';
 
+import { setTitle } from '@/utils/title';
+
+
 export default function SortPage() {
   const { state, setCurrentView, moveNode } = useApp();
   
   onMount(() => {
+    setTitle("排序");
     setCurrentView('sort');
   });
 

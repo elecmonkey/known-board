@@ -1,6 +1,13 @@
 import GithubIcon from "@/components/icons/GithubIcon";
+import { onMount } from "solid-js";
+
+import { setTitle } from "@/utils/title";
 
 export default function AboutPage() {
+  onMount(() => {
+    setTitle("关于");
+  });
+
   return (
     <div class="max-w-4xl mx-auto py-4">
       <div class="bg-white rounded-lg shadow-sm p-6">
