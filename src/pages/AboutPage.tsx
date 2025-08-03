@@ -1,3 +1,5 @@
+import GithubIcon from "@/components/icons/GithubIcon";
+
 export default function AboutPage() {
   return (
     <div class="max-w-4xl mx-auto py-4">
@@ -49,6 +51,7 @@ export default function AboutPage() {
               target="_blank" 
               class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-fit"
             >
+              <GithubIcon class="w-4 h-4 mr-2" />
               GitHub 项目仓库
             </a>
           </div>
