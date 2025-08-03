@@ -1,4 +1,5 @@
 import { createSignal, createContext, useContext, JSX, createEffect } from 'solid-js';
+import { createStore, produce } from 'solid-js/store';
 import { AppStateV2 } from '@/types/app-state';
 import { TreeNode, Task, TaskSet, isTask, isTaskSet } from '@/types/tree';
 import { ViewType } from '@/types/common';
@@ -110,7 +111,7 @@ export class TreeUtils {
 }
 
 export const AppContext = createContext<{
-  state: () => AppStateV2;
+  state: AppStateV2;
   setState: (newState: AppStateV2) => void;
   currentView: () => ViewType;
   setCurrentView: (view: ViewType) => void;
@@ -144,52 +145,41 @@ export const AppContext = createContext<{
 }>();
 
 export function AppProvider(props: { children: JSX.Element }) {
-  const [state, setState] = createSignal<AppStateV2>(initialState);
+  // 使用 createStore 替代 createSignal 来获得更精确的响应式更新
+  const [state, setState] = createStore<AppStateV2>(initialState);
   const [currentView, setCurrentView] = createSignal<ViewType>('pending');
 
   // 自动保存到localStorage
   createEffect(() => {
-    saveToStorage(state());
+    saveToStorage(state);
   });
 
-  // 深拷贝状态的工具函数
-  const cloneState = (): AppStateV2 => JSON.parse(JSON.stringify(state()));
-
   const addRootNode = (node: TreeNode) => {
-    setState(prev => ({
-      ...prev,
-      children: [...prev.children, node]
-    }));
+    setState('children', prev => [...prev, node]);
   };
 
   const addChildNode = (parentId: string, node: TreeNode) => {
-    setState(prev => {
-      const newState = cloneState();
-      const parent = TreeUtils.findNode(newState.children, parentId);
+    setState(produce(state => {
+      const parent = TreeUtils.findNode(state.children, parentId);
       if (parent && isTaskSet(parent)) {
         parent.children.push(node);
       }
-      return newState;
-    });
+    }));
   };
 
   const updateNode = (id: string, updates: Partial<TreeNode>) => {
-    setState(prev => {
-      const newState = cloneState();
-      const node = TreeUtils.findNode(newState.children, id);
+    setState(produce(state => {
+      const node = TreeUtils.findNode(state.children, id);
       if (node) {
         Object.assign(node, updates);
       }
-      return newState;
-    });
+    }));
   };
 
   const deleteNode = (id: string) => {
-    setState(prev => {
-      const newState = cloneState();
-      
+    setState(produce(state => {
       // 从根级别删除
-      newState.children = newState.children.filter(node => node.id !== id);
+      state.children = state.children.filter(node => node.id !== id);
       
       // 从所有父节点的children中删除
       const removeFromChildren = (children: TreeNode[]) => {
@@ -201,32 +191,29 @@ export function AppProvider(props: { children: JSX.Element }) {
         }
       };
       
-      removeFromChildren(newState.children);
-      return newState;
-    });
+      removeFromChildren(state.children);
+    }));
   };
 
   const moveNode = (nodeId: string, newParentId?: string, newIndex?: number) => {
-    setState(prev => {
-      const newState = cloneState();
-      
+    setState(produce(state => {
       // 找到要移动的节点
-      const nodeToMove = TreeUtils.findNode(newState.children, nodeId);
+      const nodeToMove = TreeUtils.findNode(state.children, nodeId);
       if (!nodeToMove) {
         console.warn('moveNode: 找不到要移动的节点', nodeId);
-        return prev;
+        return;
       }
       
       // 验证移动目标是否有效
       if (newParentId) {
-        const newParent = TreeUtils.findNode(newState.children, newParentId);
+        const newParent = TreeUtils.findNode(state.children, newParentId);
         if (!newParent) {
           console.warn('moveNode: 找不到目标父节点', newParentId);
-          return prev; // 如果找不到目标父节点，不执行移动
+          return;
         }
         if (newParent.type !== 'taskSet') {
           console.warn('moveNode: 目标父节点不是taskSet', newParentId);
-          return prev; // 只有taskSet才能作为父节点
+          return;
         }
       }
       
@@ -242,12 +229,15 @@ export function AppProvider(props: { children: JSX.Element }) {
         
         if (isDescendant(nodeToMove, newParentId)) {
           console.warn('moveNode: 不能将节点移动到自己的子节点中');
-          return prev;
+          return;
         }
       }
       
+      // 深拷贝要移动的节点
+      const nodeToMoveCopy = JSON.parse(JSON.stringify(nodeToMove));
+      
       // 从原位置删除
-      newState.children = newState.children.filter(node => node.id !== nodeId);
+      state.children = state.children.filter(node => node.id !== nodeId);
       
       const removeFromChildren = (children: TreeNode[]) => {
         for (const node of children) {
@@ -257,31 +247,29 @@ export function AppProvider(props: { children: JSX.Element }) {
           }
         }
       };
-      removeFromChildren(newState.children);
+      removeFromChildren(state.children);
       
       // 添加到新位置
       if (newParentId) {
-        const newParent = TreeUtils.findNode(newState.children, newParentId);
+        const newParent = TreeUtils.findNode(state.children, newParentId);
         if (newParent && isTaskSet(newParent)) {
           if (newIndex !== undefined && newIndex >= 0 && newIndex <= newParent.children.length) {
-            newParent.children.splice(newIndex, 0, nodeToMove);
+            newParent.children.splice(newIndex, 0, nodeToMoveCopy);
           } else {
-            newParent.children.push(nodeToMove);
+            newParent.children.push(nodeToMoveCopy);
           }
           console.log('moveNode: 移动到父节点', newParentId, '位置', newIndex);
         }
       } else {
         // 移动到根级别
-        if (newIndex !== undefined && newIndex >= 0 && newIndex <= newState.children.length) {
-          newState.children.splice(newIndex, 0, nodeToMove);
+        if (newIndex !== undefined && newIndex >= 0 && newIndex <= state.children.length) {
+          state.children.splice(newIndex, 0, nodeToMoveCopy);
         } else {
-          newState.children.push(nodeToMove);
+          state.children.push(nodeToMoveCopy);
         }
         console.log('moveNode: 移动到根级别，位置', newIndex);
       }
-      
-      return newState;
-    });
+    }));
   };
 
   // 便捷方法
@@ -306,8 +294,7 @@ export function AppProvider(props: { children: JSX.Element }) {
   };
 
   const toggleTaskCompletion = (id: string, showToast?: (message: string, onUndo: () => void) => void) => {
-    const currentState = state();
-    const task = TreeUtils.findNode(currentState.children, id);
+    const task = TreeUtils.findNode(state.children, id);
     
     if (!task || task.type !== 'task') return;
     
@@ -331,8 +318,7 @@ export function AppProvider(props: { children: JSX.Element }) {
   };
 
   const toggleTaskSetHidden = (id: string, showToast?: (message: string, onUndo: () => void) => void) => {
-    const currentState = state();
-    const taskSet = TreeUtils.findNode(currentState.children, id);
+    const taskSet = TreeUtils.findNode(state.children, id);
     
     if (!taskSet || taskSet.type !== 'taskSet') return;
     
@@ -356,8 +342,7 @@ export function AppProvider(props: { children: JSX.Element }) {
   };
 
   const batchRenameEpisodes = (taskId: string, names: string[], showToast?: (message: string, onUndo: () => void) => void) => {
-    const currentState = state();
-    const task = TreeUtils.findNode(currentState.children, taskId);
+    const task = TreeUtils.findNode(state.children, taskId);
     
     if (!task || task.type !== 'task' || !task.episodes?.length) return;
     

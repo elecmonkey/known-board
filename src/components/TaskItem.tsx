@@ -1,4 +1,5 @@
 import { createSignal, For, Show, createMemo } from 'solid-js';
+import { Key } from '@solid-primitives/keyed';
 import { Task } from '@/types/tree';
 import { Episode } from '@/types/episode';
 import { useApp } from '@/store';
@@ -394,35 +395,35 @@ export default function TaskItem(props: TaskItemProps) {
             </div>
             
             <div class="space-y-2 max-h-60 overflow-y-auto">
-              <For each={props.task.episodes || []}>
+              <Key each={props.task.episodes || []} by={(episode) => episode.id}>
                 {(episode, index) => (
                   <>
                     <div class={`flex items-center p-2 rounded ${
-                      episode.completed ? 'bg-green-50' : 'bg-gray-50'
+                      episode().completed ? 'bg-green-50' : 'bg-gray-50'
                     }`}>
                       <button
-                        onClick={() => updateEpisode(episode.id, { completed: !episode.completed })}
+                        onClick={() => updateEpisode(episode().id, { completed: !episode().completed })}
                         class={`flex-shrink-0 w-4 h-4 rounded border mr-2 flex items-center justify-center ${
-                          episode.completed 
+                          episode().completed 
                             ? 'bg-green-500 border-green-500 text-white text-xs' 
                             : 'border-gray-300 hover:border-green-400'
                         }`}
                       >
-                        {episode.completed && '✓'}
+                        {episode().completed && '✓'}
                       </button>
                       
                       <span class={`text-sm flex-1 truncate ${
-                        episode.completed ? 'line-through text-gray-500' : 'text-gray-700'
+                        episode().completed ? 'line-through text-gray-500' : 'text-gray-700'
                       }`}>
-                        {episode.number}. {episode.title || `第 ${episode.number} 集`}
+                        {episode().number}. {episode().title || `第 ${episode().number} 集`}
                       </span>
                       
                       <div class="flex space-x-1">
                         <button
                           onClick={() => {
-                            const newTitle = prompt('输入新的分集标题:', episode.title || '');
+                            const newTitle = prompt('输入新的分集标题:', episode().title || '');
                             if (newTitle !== null) {
-                              updateEpisode(episode.id, { title: newTitle || undefined });
+                              updateEpisode(episode().id, { title: newTitle || undefined });
                             }
                           }}
                           class="text-blue-600 hover:text-blue-800 p-1"
@@ -433,7 +434,7 @@ export default function TaskItem(props: TaskItemProps) {
                         <button
                           onClick={() => {
                             if (confirm('确定要删除这个分集吗？')) {
-                              deleteEpisode(episode.id);
+                              deleteEpisode(episode().id);
                             }
                           }}
                           class="text-red-600 hover:text-red-800 p-1"
@@ -448,7 +449,7 @@ export default function TaskItem(props: TaskItemProps) {
                     </Show>
                   </>
                 )}
-              </For>
+              </Key>
             </div>
           </div>
         </Show>

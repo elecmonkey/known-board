@@ -52,7 +52,6 @@ export default function SortPage() {
         }
         
         // 获取当前元素的位置信息
-        const currentState = state();
         let currentIndex = -1;
         let currentParentId: string | undefined = undefined;
         
@@ -73,7 +72,7 @@ export default function SortPage() {
           return false;
         };
         
-        findCurrentPosition(currentState.children);
+        findCurrentPosition(state.children);
         
         let targetIndex = Math.max(0, Math.floor(dropData.index));
         const targetParentId = dropData.parentId || undefined;
@@ -106,7 +105,7 @@ export default function SortPage() {
       }
     });
 
-    const rootNodes = () => state().children;
+    const rootNodes = () => state.children;
 
     return (
       <div class="max-w-4xl mx-auto py-4">

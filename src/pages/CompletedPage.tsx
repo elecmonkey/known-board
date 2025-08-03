@@ -14,7 +14,7 @@ export default function CompletedPage() {
   });
 
   const filteredNodes = () => {
-    const { children } = state();
+    const { children } = state;
     // 只显示已完成的任务，显示所有非隐藏的任务集
     return filterRootVisibleNodes(children, (node) => {
       if (node.type === 'task') {

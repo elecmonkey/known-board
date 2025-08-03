@@ -34,8 +34,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   
   // 检查是否有隐藏的祖先节点
   const hasHiddenAncestor = () => {
-    const currentState = state();
-    const parent = TreeUtils.findParent(currentState.children, props.taskSet.id);
+    const parent = TreeUtils.findParent(state.children, props.taskSet.id);
     if (!parent) return false;
     
     if (parent.type === 'taskSet' && parent.hidden) return true;
@@ -45,8 +44,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
   };
 
   const hasHiddenAncestorRecursive = (nodeId: string): boolean => {
-    const currentState = state();
-    const parent = TreeUtils.findParent(currentState.children, nodeId);
+    const parent = TreeUtils.findParent(state.children, nodeId);
     if (!parent) return false;
     
     if (parent.type === 'taskSet' && parent.hidden) return true;

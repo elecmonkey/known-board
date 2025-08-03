@@ -14,7 +14,7 @@ export default function AllTasksPage() {
   });
 
   const filteredNodes = () => {
-    const { children } = state();
+    const { children } = state;
     // 显示所有节点（包括隐藏的任务集，但会有视觉上的区别）
     return children;
   };

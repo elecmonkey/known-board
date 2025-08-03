@@ -17,7 +17,7 @@ export default function Footer() {
         String(now.getMinutes()).padStart(2, '0') +
         String(now.getSeconds()).padStart(2, '0');
       
-      exportDataAsJson(state(), `known-board-export-${dateString}.json`);
+      exportDataAsJson(state, `known-board-export-${dateString}.json`);
     } catch (error) {
       console.error('导出失败:', error);
       alert(error instanceof Error ? error.message : '导出失败');
