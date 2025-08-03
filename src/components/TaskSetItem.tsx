@@ -121,6 +121,12 @@ export default function TaskSetItem(props: TaskSetItemProps) {
       const newTaskSet = TreeUtils.createTaskSetNode(crypto.randomUUID(), title, description);
       addChildNode(props.taskSet.id, newTaskSet);
     }
+    
+    // 新建子项目后自动展开当前TaskSet
+    if (!props.taskSet.expanded) {
+      updateNode(props.taskSet.id, { expanded: true });
+    }
+    
     setShowAddForm(false);
   };
 
