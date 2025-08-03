@@ -162,13 +162,13 @@ export default function TaskItem(props: TaskItemProps) {
       return {
         isOverdue: false,
         days: diffDays,
-        text: `还剩${diffDays}天`
+        text: `${diffDays}天`
       };
     } else {
       return {
         isOverdue: true,
         days: Math.abs(diffDays),
-        text: `已超${Math.abs(diffDays)}天`
+        text: `超${Math.abs(diffDays)}天`
       };
     }
   };
@@ -269,7 +269,7 @@ export default function TaskItem(props: TaskItemProps) {
                                 ? 'bg-red-100 text-red-800' 
                                 : 'bg-green-100 text-green-800'
                           }`}>
-                            截止: {formatDate(props.task.deadline)} ({deadlineInfo.text})
+                            {formatDate(props.task.deadline)} ({deadlineInfo.text})
                           </span>
                         ) : null;
                       })()}
