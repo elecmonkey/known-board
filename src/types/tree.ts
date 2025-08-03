@@ -18,6 +18,7 @@ export interface Task extends BaseNode {
 // TaskSet专用类型
 export interface TaskSet extends BaseNode {
   hidden: boolean;
+  expanded: boolean;
   children: TreeNode[];
 }
 

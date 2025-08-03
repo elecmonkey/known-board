@@ -12,32 +12,25 @@ import ShowIcon from '@/components/icons/ShowIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
 import Divider from '@/components/Divider';
 
-// 使用Map来存储每个TaskSet的展开状态，避免组件重新渲染时丢失
-const taskSetExpandedMap = new Map<string, boolean>();
-
 interface TaskSetItemProps {
   taskSet: TaskSet;
   depth?: number;
 }
 
 export default function TaskSetItem(props: TaskSetItemProps) {
-  // 在组件挂载时从Map中恢复展开状态，默认为true
-  const [isExpanded, setIsExpanded] = createSignal(taskSetExpandedMap.get(props.taskSet.id) ?? true);
   const [isEditing, setIsEditing] = createSignal(false);
   const [showAddForm, setShowAddForm] = createSignal(false);
   const [editTitle, setEditTitle] = createSignal(props.taskSet.title);
   const [editDescription, setEditDescription] = createSignal(props.taskSet.description || '');
   
-  // 更新Map中的状态
-  const updateIsExpanded = (value: boolean | ((prev: boolean) => boolean)) => {
-    const newValue = typeof value === 'function' ? value(isExpanded()) : value;
-    setIsExpanded(newValue);
-    taskSetExpandedMap.set(props.taskSet.id, newValue);
-  };
-  
   const { state, updateNode, deleteNode, addChildNode, toggleTaskSetHidden, currentView } = useApp();
   const { showUndoToast } = useToast();
   const depth = props.depth || 0;
+  
+  // 切换展开状态
+  const toggleExpanded = () => {
+    updateNode(props.taskSet.id, { expanded: !(props.taskSet.expanded ?? true) });
+  };
   
   // 检查是否有隐藏的祖先节点
   const hasHiddenAncestor = () => {
@@ -144,10 +137,10 @@ export default function TaskSetItem(props: TaskSetItemProps) {
         <div class="flex items-center justify-between">
           <div class="flex items-center flex-1">
             <button
-              onClick={() => updateIsExpanded(!isExpanded())}
+              onClick={toggleExpanded}
               class="text-gray-400 hover:text-gray-600 mr-2"
             >
-              {isExpanded() ? '📂' : '📁'}
+              {(props.taskSet.expanded ?? true) ? '📂' : '📁'}
             </button>
             
             {isEditing() ? (
@@ -246,7 +239,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
           />
         )}
         
-        {isExpanded() && getFilteredChildren().length > 0 && (
+        {(props.taskSet.expanded ?? true) && getFilteredChildren().length > 0 && (
           <div class="mt-2 space-y-0">
             <Divider class="my-1" />
             <Key each={getFilteredChildren()} by={(child) => child.id}>

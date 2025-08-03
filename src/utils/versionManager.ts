@@ -81,6 +81,7 @@ export function migrateV1ToV2(v1Data: AppStateV1): AppStateV2 {
       title: taskSet.title,
       description: taskSet.description,
       hidden: taskSet.hidden,
+      expanded: true, // 默认展开状态
       children: []
     };
 

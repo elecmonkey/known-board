@@ -103,6 +103,7 @@ export class TreeUtils {
       title,
       description,
       hidden: false,
+      expanded: true,
       children: []
     };
   }
