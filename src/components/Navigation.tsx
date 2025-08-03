@@ -109,7 +109,7 @@ export default function Navigation() {
               <div class="flex space-x-1">
                 {/* 滑动指示器 */}
                 <div 
-                  class="absolute bottom-0 h-0.5 bg-blue-500 rounded-t transition-all duration-300 ease-in-out"
+                  class="absolute bottom-0 h-0.5 bg-blue-500 transition-all duration-300 ease-in-out"
                   style={{
                     width: `${desktopIndicatorStyle().width}px`,
                     left: `${desktopIndicatorStyle().left}px`
