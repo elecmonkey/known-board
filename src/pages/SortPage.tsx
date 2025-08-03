@@ -47,9 +47,48 @@ export default function SortPage() {
           return;
         }
         
-        // 确保index是有效的数字
-        const targetIndex = Math.max(0, Math.floor(dropData.index));
+        // 获取当前元素的位置信息
+        const currentState = state();
+        let currentIndex = -1;
+        let currentParentId: string | undefined = undefined;
+        
+        // 查找当前元素在哪里
+        const findCurrentPosition = (nodes: any[], parentId?: string): boolean => {
+          for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].id === draggable.id) {
+              currentIndex = i;
+              currentParentId = parentId;
+              return true;
+            }
+            if (nodes[i].children) {
+              if (findCurrentPosition(nodes[i].children, nodes[i].id)) {
+                return true;
+              }
+            }
+          }
+          return false;
+        };
+        
+        findCurrentPosition(currentState.children);
+        
+        let targetIndex = Math.max(0, Math.floor(dropData.index));
         const targetParentId = dropData.parentId || undefined;
+        
+        // 修复：如果是在同一个父容器内移动，且目标位置在当前位置之后
+        // 需要减1，因为当前元素被移除后，后面的元素索引会前移
+        if (currentParentId === targetParentId && currentIndex !== -1 && targetIndex > currentIndex) {
+          targetIndex = targetIndex - 1;
+          console.log('Adjusted target index for same container backward move:', targetIndex);
+        }
+        
+        console.log('Current position:', currentIndex, 'in', currentParentId || 'root');
+        console.log('Target position:', targetIndex, 'in', targetParentId || 'root');
+        
+        // 如果移动到相同位置，跳过
+        if (currentParentId === targetParentId && currentIndex === targetIndex) {
+          console.log('Same position, skipping move');
+          return;
+        }
         
         console.log('Executing move:', draggable.id, '→', targetParentId || 'root', 'at index', targetIndex);
         
