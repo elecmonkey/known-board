@@ -19,11 +19,11 @@ export default function AboutPage() {
           
           <h2 class="text-xl font-semibold text-gray-800 mt-6 mb-3">技术栈</h2>
           <ul class="list-disc pl-5 space-y-2 text-gray-700">
-            <li>前端框架：<a href="https://www.solidjs.com/" target="_blank" class="text-blue-600 hover:underline">SolidJS</a></li>
-            <li>样式工具：<a href="https://tailwindcss.com/" target="_blank" class="text-blue-600 hover:underline">Tailwind CSS</a></li>
-            <li>构建工具：<a href="https://vitejs.dev/" target="_blank" class="text-blue-600 hover:underline">Vite</a></li>
-            <li>路由管理：<a href="https://docs.solidjs.com/solid-router" target="_blank" class="text-blue-600 hover:underline">Solid Router</a></li>
-            <li>拖拽功能：<a href="https://solid-dnd.com/" target="_blank" class="text-blue-600 hover:underline">Solid DnD</a></li>
+            <li>框架：<a href="https://www.solidjs.com/" target="_blank" class="text-blue-600 hover:underline">SolidJS</a></li>
+            <li>样式：<a href="https://tailwindcss.com/" target="_blank" class="text-blue-600 hover:underline">Tailwind CSS</a></li>
+            <li>构建：<a href="https://vitejs.dev/" target="_blank" class="text-blue-600 hover:underline">Vite</a></li>
+            <li>路由：<a href="https://docs.solidjs.com/solid-router" target="_blank" class="text-blue-600 hover:underline">@solidjs/router</a></li>
+            <li>拖拽库：<a href="https://solid-dnd.com/" target="_blank" class="text-blue-600 hover:underline">@thisbeyond/solid-dnd</a></li>
           </ul>
         </div>
 
