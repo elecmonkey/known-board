@@ -355,8 +355,8 @@ export default function TaskItem(props: TaskItemProps) {
           </div>
         </div>
         
-        {/* 当showEpisodes为true时展开 */}
-        <Show when={showEpisodes()}>
+        {/* 当showEpisodes为true且有episodes时展开 */}
+        <Show when={showEpisodes() && (props.task.episodes?.length || 0) > 0}>
           <div class="mt-4 pl-4 border-l-2 border-gray-200 space-y-2">
             <div class="flex justify-between items-center">
               <h4 class="font-medium text-gray-700">分集列表</h4>
