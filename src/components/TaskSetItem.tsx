@@ -144,7 +144,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
           <div class="flex items-center flex-1">
             <button
               onClick={toggleExpanded}
-              class="text-gray-400 hover:text-gray-600 mr-2"
+              class="text-gray-400 hover:text-gray-600 mr-2 text-xl"
             >
               {(props.taskSet.expanded ?? true) ? '📂' : '📁'}
             </button>

@@ -23,7 +23,7 @@ export default function SortableTaskSetItem(props: SortableTaskSetItemProps) {
     <div
       class={`sortable-taskset-item ${draggable.isActiveDraggable ? 'dragging' : ''}`}
       style={{ 
-        'margin-left': `${props.level == 0 ? 0 : 16}px`,
+        'margin-left': `${props.level == 0 ? 0 : 25}px`,
         transform: draggable.transform ? transformStyle(draggable.transform).transform : undefined,
         opacity: draggable.isActiveDraggable ? 0.5 : 1,
         transition: draggable.isActiveDraggable ? 'none' : 'transform 200ms ease'
