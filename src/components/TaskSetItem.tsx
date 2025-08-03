@@ -136,7 +136,7 @@ export default function TaskSetItem(props: TaskSetItemProps) {
 
   return (
     <Show when={!props.taskSet.hidden || currentView() === 'all'}>
-      <div style={`margin-left: 20px`}>
+      <div style={`margin-left: ${depth == 0 ? 0 : 25}px`}>
         <div class={`py-3 pl-2 ${
           shouldApplyOpacity() ? 'opacity-50' : ''
         }`}>
