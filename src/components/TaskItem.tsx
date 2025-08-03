@@ -282,16 +282,16 @@ export default function TaskItem(props: TaskItemProps) {
                   placeholder="学习资源链接（可选）"
                 />
                 
-                <div class="flex space-x-2">
+                <div class="flex space-x-3">
                   <button
                     onClick={saveChanges}
-                    class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     保存
                   </button>
                   <button
                     onClick={handleCancel}
-                    class="px-3 py-1 bg-gray-300 text-gray-700 rounded text-sm hover:bg-gray-400"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
                     取消
                   </button>
