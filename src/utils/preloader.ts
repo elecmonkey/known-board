@@ -1,9 +1,6 @@
 export async function startPreload() {
   const manifest = (window as any).__PREFETCH_MANIFEST__;
-  if (!manifest) {
-    console.warn('⚠️ No prefetch manifest found (development mode)');
-    return;
-  }
+  if (!manifest) return;
 
   setTimeout(() => {
     manifest.high.forEach((fileName: string) => {
