@@ -1,30 +1,17 @@
 import { A } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 import { useApp } from '@/store';
-import { exportDataAsJson } from '@/utils/importExport';
 import ImportWizard from '@/components/import/ImportWizard';
+import ExportModal from '@/components/export/ExportModal';
 import GithubIcon from '@/components/icons/GithubIcon';
 
 export default function Footer() {
   const { state, importData } = useApp();
   const [showImportWizard, setShowImportWizard] = createSignal(false);
+  const [showExportModal, setShowExportModal] = createSignal(false);
   
   const handleExport = () => {
-    try {
-      // 将时间精确到秒
-      const now = new Date();
-      const dateString = now.getFullYear() + 
-        '-' + String(now.getMonth() + 1).padStart(2, '0') + 
-        '-' + String(now.getDate()).padStart(2, '0') +
-        '-' + String(now.getHours()).padStart(2, '0') +
-        String(now.getMinutes()).padStart(2, '0') +
-        String(now.getSeconds()).padStart(2, '0');
-      
-      exportDataAsJson(state, `known-board-export-${dateString}.json`);
-    } catch (error) {
-      console.error('导出失败:', error);
-      alert(error instanceof Error ? error.message : '导出失败');
-    }
+    setShowExportModal(true);
   };
   
   const handleImport = () => {
@@ -38,6 +25,10 @@ export default function Footer() {
   
   const handleImportCancel = () => {
     setShowImportWizard(false);
+  };
+
+  const handleExportClose = () => {
+    setShowExportModal(false);
   };
 
   return (
@@ -129,6 +120,12 @@ export default function Footer() {
         currentState={state}
         onConfirm={handleImportConfirm}
         onCancel={handleImportCancel}
+      />
+      
+      <ExportModal
+        isOpen={showExportModal()}
+        currentState={state}
+        onClose={handleExportClose}
       />
     </>
   );
