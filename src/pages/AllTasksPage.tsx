@@ -3,13 +3,11 @@ import { useApp } from '@/store';
 import TaskList from '@/components/TaskList';
 import { filterRootVisibleNodes } from '@/utils/filterUtils';
 
-import { setTitle } from "@/utils/title";
-
 export default function AllTasksPage() {
-  const { state, setCurrentView } = useApp();
+  const { state, setCurrentView, setPageTitle } = useApp();
 
   onMount(() => {
-    setTitle("所有任务");
+    setPageTitle("所有任务");
     setCurrentView('all');
   });
 

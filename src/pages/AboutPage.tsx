@@ -1,11 +1,12 @@
 import GithubIcon from "@/components/icons/GithubIcon";
 import { onMount } from "solid-js";
-
-import { setTitle } from "@/utils/title";
+import { useApp } from '@/store';
 
 export default function AboutPage() {
+  const { setPageTitle } = useApp();
+  
   onMount(() => {
-    setTitle("关于");
+    setPageTitle("关于");
   });
 
   return (

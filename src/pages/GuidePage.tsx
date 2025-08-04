@@ -5,15 +5,17 @@ import HideIcon from '@/components/icons/HideIcon';
 import ShowIcon from '@/components/icons/ShowIcon';
 
 import { onMount } from 'solid-js';
-import { setTitle } from '@/utils/title';
+import { useApp } from '@/store';
 
 function B(props: { children: any }) {
   return <span class="bg-gray-300 rounded-sm p-0.5">{props.children}</span>;
 }
 
 export default function GuidePage() {
+  const { setPageTitle } = useApp();
+  
   onMount(() => {
-    setTitle("使用指南");
+    setPageTitle("使用指南");
   });
 
   return (

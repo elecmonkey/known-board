@@ -6,14 +6,12 @@ import { TreeNode } from '@/types/tree';
 import { filterRootVisibleNodes } from '@/utils/filterUtils';
 import PlusIcon from '@/components/icons/PlusIcon';
 
-import { setTitle } from '@/utils/title';
-
 export default function PendingPage() {
-  const { state, addTask, addTaskSet, setCurrentView } = useApp();
+  const { state, addTask, addTaskSet, setCurrentView, setPageTitle } = useApp();
   const [showAddForm, setShowAddForm] = createSignal(false);
 
   onMount(() => {
-    setTitle("待办");
+    setPageTitle("待办");
     setCurrentView('pending');
   });
 

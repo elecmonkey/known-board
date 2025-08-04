@@ -145,6 +145,7 @@ export const AppContext = createContext<{
   setState: (newState: AppStateV2) => void;
   currentView: () => ViewType;
   setCurrentView: (view: ViewType) => void;
+  setPageTitle: (title: string) => void;
   
   // 树形节点操作
   addRootNode: (node: TreeNode) => void;
@@ -177,6 +178,15 @@ export const AppContext = createContext<{
 export function AppProvider(props: { children: JSX.Element }) {
   // 使用 createStore 替代 createSignal 来获得更精确的响应式更新
   const [state, setState] = createStore<AppStateV2>(initialState);
+  
+  // 标题管理
+  const [pageTitle, setPageTitle] = createSignal("");
+  
+  // title的响应式更新
+  createEffect(() => {
+    const title = pageTitle();
+    document.title = title ? `${title} - Known Board` : 'Known Board';
+  });
   const [currentView, setCurrentView] = createSignal<ViewType>('pending');
 
   // 自动保存到localStorage
@@ -441,6 +451,7 @@ export function AppProvider(props: { children: JSX.Element }) {
         setState,
         currentView,
         setCurrentView,
+        setPageTitle,
         addRootNode,
         addChildNode,
         updateNode,

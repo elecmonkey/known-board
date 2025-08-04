@@ -3,13 +3,11 @@ import { useApp } from '@/store';
 import TaskList from '@/components/TaskList';
 import { filterRootVisibleNodes } from '@/utils/filterUtils';
 
-import { setTitle } from "@/utils/title";
-
 export default function CompletedPage() {
-  const { state, setCurrentView } = useApp();
+  const { state, setCurrentView, setPageTitle } = useApp();
 
   onMount(() => {
-    setTitle("关于");
+    setPageTitle("已完成");
     setCurrentView('completed');
   });
 
