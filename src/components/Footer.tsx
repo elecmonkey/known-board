@@ -1,24 +1,13 @@
 import { A } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 import { useApp } from '@/store';
-import { exportDataAsJson, importDataFromJson } from '@/utils/importExport';
-import { AppStateV2 } from '@/types/app-state';
-import { 
-  hasExistingData, 
-  detectConflicts, 
-  processImportData, 
-  ImportMode, 
-  ConflictResolution, 
-  ConflictItem 
-} from '@/utils/importConflictHandler';
-import ImportDialog from '@/components/ImportDialog';
+import { exportDataAsJson } from '@/utils/importExport';
+import ImportWizard from '@/components/import/ImportWizard';
 import GithubIcon from '@/components/icons/GithubIcon';
 
 export default function Footer() {
   const { state, importData } = useApp();
-  const [showImportDialog, setShowImportDialog] = createSignal(false);
-  const [pendingImportData, setPendingImportData] = createSignal<AppStateV2 | null>(null);
-  const [conflicts, setConflicts] = createSignal<ConflictItem[]>([]);
+  const [showImportWizard, setShowImportWizard] = createSignal(false);
   
   const handleExport = () => {
     try {
@@ -39,64 +28,16 @@ export default function Footer() {
   };
   
   const handleImport = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    
-    input.onchange = async (event) => {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      
-      try {
-        const migratedData = await importDataFromJson(file);
-        
-        // 检查是否有现有数据
-        const hasExisting = hasExistingData(state);
-        
-        if (!hasExisting) {
-          // 没有现有数据，直接导入
-          importData(migratedData);
-          alert('数据导入成功！');
-        } else {
-          // 有现有数据，检测冲突并显示对话框
-          const conflictInfo = detectConflicts(state.children, migratedData.children);
-          setPendingImportData(migratedData);
-          setConflicts(conflictInfo.conflicts);
-          setShowImportDialog(true);
-        }
-      } catch (error) {
-        console.error('导入失败:', error);
-        alert(error instanceof Error ? error.message : '导入失败');
-      }
-    };
-    
-    input.click();
+    setShowImportWizard(true);
   };
   
-  const handleImportConfirm = (mode: ImportMode, conflictResolution?: ConflictResolution) => {
-    const newData = pendingImportData();
-    if (!newData) return;
-    
-    try {
-      const processedData = processImportData(state, newData, mode, conflictResolution);
-      importData(processedData);
-      
-      setShowImportDialog(false);
-      setPendingImportData(null);
-      setConflicts([]);
-      
-      const modeText = mode === 'replace' ? '覆盖' : '合并';
-      alert(`数据${modeText}导入成功！`);
-    } catch (error) {
-      console.error('导入处理失败:', error);
-      alert(error instanceof Error ? error.message : '导入处理失败');
-    }
+  const handleImportConfirm = (finalData) => {
+    importData(finalData);
+    setShowImportWizard(false);
   };
   
   const handleImportCancel = () => {
-    setShowImportDialog(false);
-    setPendingImportData(null);
-    setConflicts([]);
+    setShowImportWizard(false);
   };
 
   return (
@@ -183,10 +124,9 @@ export default function Footer() {
         </div>
       </footer>
       
-      <ImportDialog
-        isOpen={showImportDialog()}
-        hasExistingData={hasExistingData(state)}
-        conflicts={conflicts()}
+      <ImportWizard
+        isOpen={showImportWizard()}
+        currentState={state}
         onConfirm={handleImportConfirm}
         onCancel={handleImportCancel}
       />
