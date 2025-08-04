@@ -79,6 +79,12 @@ export default function Footer() {
             
             <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
               <div class="flex items-center space-x-4">
+                <A 
+                  href="/"
+                  class="text-sm text-blue-600 hover:text-blue-800 transition-colors font-medium"
+                >
+                  主页
+                </A>
                 <button 
                   onClick={handleExport}
                   class="text-sm text-blue-600 hover:text-blue-800 transition-colors font-medium"
