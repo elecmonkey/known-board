@@ -28,7 +28,7 @@ export default function ExportModal(props: ExportModalProps) {
       setIsExporting(true);
       
       const exportData = prepareExportData(props.currentState);
-      const jsonString = JSON.stringify(exportData, null, 2);
+      const jsonString = JSON.stringify(exportData);
       
       // 尝试使用现代 Clipboard API
       if (navigator.clipboard && navigator.clipboard.writeText) {

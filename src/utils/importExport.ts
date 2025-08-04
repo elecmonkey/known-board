@@ -13,7 +13,7 @@ import { loadAppData, prepareExportData } from '@/utils/versionManager';
 export function exportDataAsJson(appState: AppStateV2, filename: string): void {
   try {
     const exportData = prepareExportData(appState);
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(exportData)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
