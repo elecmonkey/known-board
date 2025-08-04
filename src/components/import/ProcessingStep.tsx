@@ -133,7 +133,7 @@ export default function ProcessingStep(props: ProcessingStepProps) {
       </Show>
 
       {/* 底部按钮 */}
-      <div class="flex justify-between pt-4">
+      <div class="flex justify-end pt-4 space-x-3">
         <Show when={status() === 'error'}>
           <button
             onClick={props.onPrev}
@@ -143,33 +143,23 @@ export default function ProcessingStep(props: ProcessingStepProps) {
           </button>
         </Show>
         
-        <div class="space-x-3 ml-auto">
+        <Show when={status() === 'success'}>
           <button
-            onClick={props.onCancel}
-            disabled={status() === 'processing'}
-            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
+            onClick={handleConfirm}
+            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            取消
+            完成导入
           </button>
-          
-          <Show when={status() === 'success'}>
-            <button
-              onClick={handleConfirm}
-              class="px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
-            >
-              完成导入
-            </button>
-          </Show>
-          
-          <Show when={status() === 'error'}>
-            <button
-              onClick={processImport}
-              class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-            >
-              重试
-            </button>
-          </Show>
-        </div>
+        </Show>
+        
+        <Show when={status() === 'error'}>
+          <button
+            onClick={processImport}
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            重试
+          </button>
+        </Show>
       </div>
     </div>
   );

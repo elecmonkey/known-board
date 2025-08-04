@@ -59,20 +59,12 @@ export default function ImportModeStep(props: ImportStepProps) {
           上一步
         </button>
         
-        <div class="space-x-3">
-          <button
-            onClick={props.onCancel}
-            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
-          >
-            取消
-          </button>
-          <button
-            onClick={handleNext}
-            class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-          >
-            下一步
-          </button>
-        </div>
+        <button
+          onClick={handleNext}
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          下一步
+        </button>
       </div>
     </div>
   );
