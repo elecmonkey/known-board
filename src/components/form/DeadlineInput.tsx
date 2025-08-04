@@ -8,23 +8,34 @@ interface DeadlineInputProps {
 }
 
 export default function DeadlineInput(props: DeadlineInputProps) {
+  const formatDateToLocal = (date: Date) => {
+    // 使用本地时间格式化日期，避免UTC时区转换问题
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleQuickFill = (days: number) => {
     const date = new Date();
+    // 重置时间为当天开始，避免时区问题
+    date.setHours(0, 0, 0, 0);
+    
     if (days === 0) {
       // 今天
-      props.onInput(date.toISOString().split('T')[0]);
+      props.onInput(formatDateToLocal(date));
     } else if (days === 1) {
       // 明天
       date.setDate(date.getDate() + 1);
-      props.onInput(date.toISOString().split('T')[0]);
+      props.onInput(formatDateToLocal(date));
     } else if (days === 7) {
       // 1周后
       date.setDate(date.getDate() + 7);
-      props.onInput(date.toISOString().split('T')[0]);
+      props.onInput(formatDateToLocal(date));
     } else if (days === 30) {
       // 1个月后
       date.setMonth(date.getMonth() + 1);
-      props.onInput(date.toISOString().split('T')[0]);
+      props.onInput(formatDateToLocal(date));
     }
   };
 
