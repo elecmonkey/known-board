@@ -1,5 +1,17 @@
+interface PrefetchManifest {
+  high: string[];
+  medium: string[];
+  low: string[];
+}
+
+declare global {
+  interface Window {
+    __PREFETCH_MANIFEST__?: PrefetchManifest;
+  }
+}
+
 export async function startPreload() {
-  const manifest = (window as any).__PREFETCH_MANIFEST__;
+  const manifest = window.__PREFETCH_MANIFEST__;
   if (!manifest) return;
 
   setTimeout(() => {

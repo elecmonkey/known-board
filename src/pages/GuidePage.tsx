@@ -6,8 +6,9 @@ import ShowIcon from '@/components/icons/ShowIcon';
 
 import { onMount } from 'solid-js';
 import { useApp } from '@/store';
+import { JSX } from 'solid-js';
 
-function B(props: { children: any }) {
+function B(props: { children: JSX.Element }) {
   return <span class="bg-gray-300 rounded-sm p-0.5">{props.children}</span>;
 }
 

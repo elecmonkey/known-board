@@ -2,6 +2,7 @@ import { TreeNode } from '@/types/tree';
 
 interface DragHandleProps {
   node: TreeNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dragActivators: Record<string, any>; // solid-dnd的dragActivators类型
   isDragging: boolean;
 }

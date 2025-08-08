@@ -10,6 +10,7 @@ export const CURRENT_VERSION = '2.0' as const;
 /**
  * 检测数据版本
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function detectDataVersion(data: any): '1.0' | '2.0' | 'unknown' {
   if (!data || typeof data !== 'object') {
     return 'unknown';
@@ -34,6 +35,7 @@ export function detectDataVersion(data: any): '1.0' | '2.0' | 'unknown' {
 /**
  * 验证 TreeNode 结构的有效性
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function validateTreeNode(node: any): node is TreeNode {
   return (
     node &&
@@ -48,6 +50,7 @@ export function validateTreeNode(node: any): node is TreeNode {
 /**
  * 验证 AppStateV2 结构的有效性
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function validateAppStateV2(data: any): data is AppStateV2 {
   return (
     data &&
@@ -140,6 +143,7 @@ export function migrateV1ToV2(v1Data: AppStateV1): AppStateV2 {
 /**
  * 通用数据加载器 - 自动处理版本检测和迁移
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function loadAppData(rawData: any): AppStateV2 {
   const version = detectDataVersion(rawData);
 

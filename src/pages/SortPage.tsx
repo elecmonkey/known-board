@@ -1,5 +1,6 @@
 import { onMount, onCleanup } from 'solid-js';
 import { useApp, TreeUtils } from '@/store';
+import { TreeNode, isTaskSet } from '@/types/tree';
 import { 
   DragDropProvider, 
   DragDropSensors,
@@ -46,15 +47,16 @@ export default function SortPage() {
         // 定位拖拽项的当前父与索引
         let currentIndex = -1;
         let currentParentId: string | undefined = undefined;
-        const findCurrentPosition = (nodes: any[], parentId?: string): boolean => {
+        const findCurrentPosition = (nodes: TreeNode[], parentId?: string): boolean => {
           for (let i = 0; i < nodes.length; i++) {
-            if (nodes[i].id === draggable.id) {
+            const node = nodes[i];
+            if (node.id === draggable.id) {
               currentIndex = i;
               currentParentId = parentId;
               return true;
             }
-            if (nodes[i].children) {
-              if (findCurrentPosition(nodes[i].children, nodes[i].id)) return true;
+            if (isTaskSet(node)) {
+              if (findCurrentPosition(node.children, node.id)) return true;
             }
           }
           return false;
@@ -71,7 +73,7 @@ export default function SortPage() {
           if (parentNode && parentNode.type === 'taskSet') {
             return parentNode.children.filter(n => n.id !== draggable.id);
           }
-          return [] as any[];
+          return [] as TreeNode[];
         };
 
         const filteredChildren = getTargetChildrenView(targetParentId);
