@@ -50,8 +50,8 @@ export default function SortableTaskSetItem(props: SortableTaskSetItemProps) {
       {/* TaskSet内部的放置区域 - 即使没有子元素也要显示 */}
       <div class="ml-4 border-l-2 border-gray-100 min-h-[20px]">
         <Show when={!hasChildren()}>
-          {/* 空TaskSet的放置区域 */}
-          <DropZone parentId={props.node.id} index={0} />
+          {/* 空TaskSet的放置区域（稳定锚点：start） */}
+          <DropZone parentId={props.node.id} index={0} slot="start" />
         </Show>
         
         <Show when={hasChildren()}>

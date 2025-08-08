@@ -1,5 +1,5 @@
 import { For } from 'solid-js';
-import { TreeNode, TaskSet, Task, isTaskSet } from '@/types/tree';
+import { TreeNode, isTaskSet } from '@/types/tree';
 import SortableTaskItem from '@/components/sort/SortableTaskItem';
 import SortableTaskSetItem from '@/components/sort/SortableTaskSetItem';
 import DropZone from '@/components/sort/DropZone';
@@ -17,7 +17,7 @@ export default function SortableTree(props: SortableTreeProps) {
   return (
     <div class="sortable-tree">
       {/* 顶部放置区域 */}
-      <DropZone parentId={parentId()} index={0} />
+      <DropZone parentId={parentId()} index={0} slot="start" />
       
       <For each={props.nodes}>
         {(node, index) => (
@@ -44,7 +44,7 @@ export default function SortableTree(props: SortableTreeProps) {
               }
             })()}
             {/* 每个元素后的放置区域 */}
-            <DropZone parentId={parentId()} index={index() + 1} />
+            <DropZone parentId={parentId()} index={index() + 1} slot="after" afterId={node.id} />
           </>
         )}
       </For>

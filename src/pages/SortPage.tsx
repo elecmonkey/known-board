@@ -1,5 +1,5 @@
 import { onMount, onCleanup } from 'solid-js';
-import { useApp } from '@/store';
+import { useApp, TreeUtils } from '@/store';
 import { 
   DragDropProvider, 
   DragDropSensors,
@@ -38,21 +38,14 @@ export default function SortPage() {
       if (droppable && draggable.id !== droppable.id) {
         console.log('Drag ended:', draggable.id, 'to', droppable.id);
         console.log('Droppable data:', droppable.data);
-        
-        // 解析放置区域数据
-        const dropData = droppable.data as { parentId: string | null; index: number };
-        
-        // 验证拖拽数据
-        if (!dropData || typeof dropData.index !== 'number') {
-          console.warn('Invalid drop data:', dropData);
-          return;
-        }
-        
-        // 获取当前元素的位置信息
+
+        // 解析放置区域数据（包含稳定锚点）
+        const dropData = droppable.data as { parentId: string | null; index: number; slot?: 'start' | 'after'; afterId?: string };
+        if (!dropData) return;
+
+        // 定位拖拽项的当前父与索引
         let currentIndex = -1;
         let currentParentId: string | undefined = undefined;
-        
-        // 查找当前元素在哪里
         const findCurrentPosition = (nodes: any[], parentId?: string): boolean => {
           for (let i = 0; i < nodes.length; i++) {
             if (nodes[i].id === draggable.id) {
@@ -61,42 +54,51 @@ export default function SortPage() {
               return true;
             }
             if (nodes[i].children) {
-              if (findCurrentPosition(nodes[i].children, nodes[i].id)) {
-                return true;
-              }
+              if (findCurrentPosition(nodes[i].children, nodes[i].id)) return true;
             }
           }
           return false;
         };
-        
         findCurrentPosition(state.children);
-        
-        let targetIndex = Math.max(0, Math.floor(dropData.index));
+
         const targetParentId = dropData.parentId || undefined;
-        
-        // 修复：如果是在同一个父容器内移动，且目标位置在当前位置之后
-        // 需要减1，因为当前元素被移除后，后面的元素索引会前移
-        if (currentParentId === targetParentId && currentIndex !== -1 && targetIndex > currentIndex) {
-          targetIndex = targetIndex - 1;
-          console.log('Adjusted target index for same container backward move:', targetIndex);
+
+        // 基于锚点（start/after:childId）计算插入 index：
+        // 先取目标容器的“过滤后子数组”（临时视图：排除被拖拽项），再根据锚点求 index。
+        const getTargetChildrenView = (parentId?: string) => {
+          if (!parentId) return state.children.filter(n => n.id !== draggable.id);
+          const parentNode = TreeUtils.findNode(state.children, parentId);
+          if (parentNode && parentNode.type === 'taskSet') {
+            return parentNode.children.filter(n => n.id !== draggable.id);
+          }
+          return [] as any[];
+        };
+
+        const filteredChildren = getTargetChildrenView(targetParentId);
+
+        let targetIndex: number;
+        if (dropData.slot === 'start') {
+          targetIndex = 0;
+        } else if (dropData.slot === 'after') {
+          if (!dropData.afterId) return; // 缺少锚点信息，放弃此次移动
+          const anchorIdx = filteredChildren.findIndex(n => n.id === dropData.afterId);
+          if (anchorIdx < 0) return; // 找不到锚点，放弃此次移动
+          targetIndex = anchorIdx + 1;
+        } else {
+          // 兼容旧数据：回退到传入的 index，并做 clamp
+          targetIndex = Math.max(0, Math.floor(dropData.index));
         }
-        
-        console.log('Current position:', currentIndex, 'in', currentParentId || 'root');
-        console.log('Target position:', targetIndex, 'in', targetParentId || 'root');
-        
-        // 如果移动到相同位置，跳过
-        if (currentParentId === targetParentId && currentIndex === targetIndex) {
-          console.log('Same position, skipping move');
-          return;
-        }
-        
-        console.log('Executing move:', draggable.id, '→', targetParentId || 'root', 'at index', targetIndex);
-        
-        moveNode(
-          draggable.id as string,
-          targetParentId,
-          targetIndex
-        );
+
+        // clamp 到 [0, filteredChildren.length]
+        const maxLen = filteredChildren.length;
+        if (targetIndex < 0) targetIndex = 0;
+        if (targetIndex > maxLen) targetIndex = maxLen;
+
+        // 同父同位置直接跳过
+        if (currentParentId === targetParentId && currentIndex === targetIndex) return;
+
+        console.log('Executing move (anchor-based):', draggable.id, '→', targetParentId || 'root', 'at index', targetIndex);
+        moveNode(draggable.id as string, targetParentId, targetIndex);
       } else {
         console.log('Drag cancelled or same position');
       }
