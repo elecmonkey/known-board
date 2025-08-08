@@ -121,7 +121,7 @@ export function processImportData(
   
   if (conflictInfo.hasConflicts && conflictResolution) {
     switch (conflictResolution) {
-      case 'overwrite':
+      case 'overwrite': {
         // 从现有数据中移除冲突的节点，然后合并
         const conflictIds = new Set(conflictInfo.conflicts.map(c => c.id));
         const filteredExistingNodes = existingState.children.filter(node => 
@@ -131,22 +131,25 @@ export function processImportData(
           ...existingState,
           children: [...filteredExistingNodes, ...processedNewNodes]
         };
+      }
         
-      case 'keep_old':
+      case 'keep_old': {
         // 从新数据中移除冲突的节点
         const conflictIdsSet = new Set(conflictInfo.conflicts.map(c => c.id));
         processedNewNodes = processedNewNodes.filter(node => 
           !conflictIdsSet.has(node.id)
         );
         break;
+      }
         
-      case 'regenerate_id':
+      case 'regenerate_id': {
         // 为冲突的节点重新生成ID
         const conflictIdsRegenSet = new Set(conflictInfo.conflicts.map(c => c.id));
         processedNewNodes = processedNewNodes.map(node => 
           conflictIdsRegenSet.has(node.id) ? regenerateNodeId(node) : node
         );
         break;
+      }
     }
   }
   
