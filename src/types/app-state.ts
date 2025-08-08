@@ -14,8 +14,8 @@ export interface AppStateV1 {
   tasks: Task[];
 }
 
-// 旧的AppState接口，保持向后兼容
-export interface AppState extends AppStateV1 {}
+// 旧的AppState类型，保持向后兼容
+export type AppState = AppStateV1;
 
 // 联合类型，用于版本检测
 export type AppStateAny = AppStateV1 | AppStateV2;
