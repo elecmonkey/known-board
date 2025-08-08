@@ -2,15 +2,15 @@ import { createSignal, For, Show, useContext } from 'solid-js';
 import { Key } from '@solid-primitives/keyed';
 import { TaskSet, TreeNode, Task, isTask, isTaskSet } from '@/types/tree';
 import { useApp, AppContext, TreeUtils } from '@/store';
-import { useToast } from '@/components/Toast';
-import TaskItem from '@/components/TaskItem';
+import { useToast } from '@/components/layout/Toast';
+import TaskItem from '@/components/task/TaskItem';
 import AddIcon from '@/components/icons/AddIcon';
-import AddItemForm from '@/components/AddItemForm';
+import AddItemForm from '@/components/form/AddItemForm';
 import EditIcon from '@/components/icons/EditIcon';
 import HideIcon from '@/components/icons/HideIcon';
 import ShowIcon from '@/components/icons/ShowIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
-import Divider from '@/components/Divider';
+import Divider from '@/components/layout/Divider';
 
 interface TaskSetItemProps {
   taskSet: TaskSet;

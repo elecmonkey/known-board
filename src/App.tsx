@@ -2,8 +2,8 @@ import type { Component } from 'solid-js';
 import { lazy, onMount } from 'solid-js';
 import { Router, Route } from '@solidjs/router';
 import { AppProvider } from '@/store';
-import { ToastProvider } from '@/components/Toast';
-import Layout from '@/components/Layout';
+import { ToastProvider } from '@/components/layout/Toast';
+import Layout from '@/components/layout/Layout';
 import { startPreload } from '@/utils/preloader';
 
 const PendingPage = lazy(() => import('@/pages/PendingPage'));
