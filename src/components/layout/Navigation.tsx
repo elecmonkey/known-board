@@ -5,8 +5,8 @@ export default function Navigation() {
   const location = useLocation();
   const [indicatorStyle, setIndicatorStyle] = createSignal({ width: 0, left: 0 });
   const [desktopIndicatorStyle, setDesktopIndicatorStyle] = createSignal({ width: 0, left: 0 });
-  let indicatorRefs: (HTMLAnchorElement | undefined)[] = [];
-  let desktopIndicatorRefs: (HTMLAnchorElement | undefined)[] = [];
+  const indicatorRefs: (HTMLAnchorElement | undefined)[] = [];
+  const desktopIndicatorRefs: (HTMLAnchorElement | undefined)[] = [];
 
   const navItems = [
     { path: '/', label: '待办', icon: '📋' },
