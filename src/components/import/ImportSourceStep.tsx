@@ -1,6 +1,5 @@
 import { createSignal, Show, createMemo } from 'solid-js';
 import { ImportStepProps } from '@/types/import';
-import { importDataFromJson } from '@/utils/importExport';
 import { AppStateV2 } from '@/types/app-state';
 import { loadAppData } from '@/utils/versionManager';
 

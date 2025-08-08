@@ -1,4 +1,4 @@
-import { createSignal, For, Show, createMemo } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import { Key } from '@solid-primitives/keyed';
 import { Task } from '@/types/tree';
 import { Episode } from '@/types/episode';
@@ -17,7 +17,7 @@ import VideoUrlInput from '@/components/form/VideoUrlInput';
 const episodeVisibilityMap = new Map<string, boolean>();
 
 // 使用Map来存储每个任务的episode列表滚动位置，避免重渲染时丢失滚动位置
-const episodeScrollPositionMap = new Map<string, number>();
+// const episodeScrollPositionMap = new Map<string, number>();
 
 interface TaskItemProps {
   task: Task;
@@ -25,7 +25,7 @@ interface TaskItemProps {
 }
 
 export default function TaskItem(props: TaskItemProps) {
-  const [isExpanded, setIsExpanded] = createSignal(false);
+  // const [isExpanded, setIsExpanded] = createSignal(false);
   const [isEditing, setIsEditing] = createSignal(false);
   const [editTitle, setEditTitle] = createSignal(props.task.title);
   const [editDescription, setEditDescription] = createSignal(props.task.description || '');
@@ -49,7 +49,7 @@ export default function TaskItem(props: TaskItemProps) {
   };
   
   // 创建一个记忆化的episodes计数，用于检测episodes变化
-  const episodesCount = createMemo(() => props.task.episodes?.length || 0);
+  // const episodesCount = createMemo(() => props.task.episodes?.length || 0);
 
   const saveChanges = () => {
     let videoUrlValue = editVideoUrl().trim();

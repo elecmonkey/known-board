@@ -1,7 +1,6 @@
 import { onMount } from 'solid-js';
 import { useApp } from '@/store';
 import TaskList from '@/components/task/TaskList';
-import { filterRootVisibleNodes } from '@/utils/filterUtils';
 
 export default function AllTasksPage() {
   const { state, setCurrentView, setPageTitle } = useApp();

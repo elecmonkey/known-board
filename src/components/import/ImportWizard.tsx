@@ -1,7 +1,7 @@
 import { createSignal, Show } from 'solid-js';
 import { AppStateV2 } from '@/types/app-state';
 import { ImportWizardState, ImportStep } from '@/types/import';
-import { hasExistingData, detectConflicts, processImportData } from '@/utils/importConflictHandler';
+import { hasExistingData, detectConflicts } from '@/utils/importConflictHandler';
 import ImportSourceStep from './ImportSourceStep';
 import ImportModeStep from './ImportModeStep';
 import ConflictResolutionStep from './ConflictResolutionStep';

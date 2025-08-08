@@ -34,7 +34,7 @@ export default function DragHandle(props: DragHandleProps) {
     }
   };
 
-  const handlePointerUp = (e: PointerEvent) => {
+  const handlePointerUp = (/*e: PointerEvent*/) => {
     const elapsed = Date.now() - startTime;
     
     if (elapsed < 200 && !hasMoved) {

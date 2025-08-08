@@ -1,7 +1,7 @@
-import { createSignal, For, Show, useContext } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import { Key } from '@solid-primitives/keyed';
-import { TaskSet, TreeNode, Task, isTask, isTaskSet } from '@/types/tree';
-import { useApp, AppContext, TreeUtils } from '@/store';
+import { TaskSet, isTask, isTaskSet } from '@/types/tree';
+import { useApp, TreeUtils } from '@/store';
 import { useToast } from '@/components/layout/Toast';
 import TaskItem from '@/components/task/TaskItem';
 import AddIcon from '@/components/icons/AddIcon';

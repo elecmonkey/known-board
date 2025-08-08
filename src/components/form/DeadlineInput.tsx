@@ -1,5 +1,3 @@
-import { createSignal } from 'solid-js';
-
 interface DeadlineInputProps {
   id: string;
   name: string;

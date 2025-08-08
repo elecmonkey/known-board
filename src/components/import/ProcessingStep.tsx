@@ -1,7 +1,7 @@
 import { createEffect, createSignal, Show } from 'solid-js';
 import { ImportStepProps } from '@/types/import';
 import { AppStateV2 } from '@/types/app-state';
-import { processImportData, detectConflicts } from '@/utils/importConflictHandler';
+import { processImportData } from '@/utils/importConflictHandler';
 
 interface ProcessingStepProps extends ImportStepProps {
   currentAppState: AppStateV2;

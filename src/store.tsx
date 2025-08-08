@@ -1,9 +1,8 @@
 import { createSignal, createContext, useContext, JSX, createEffect } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
 import { AppStateV2 } from '@/types/app-state';
-import { TreeNode, Task, TaskSet, isTask, isTaskSet } from '@/types/tree';
+import { TreeNode, isTaskSet } from '@/types/tree';
 import { ViewType } from '@/types/common';
-import { Episode } from '@/types/episode';
 import { loadFromStorage, saveToStorage } from '@/utils/storage';
 
 // 滚动位置保存工具

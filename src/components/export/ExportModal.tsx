@@ -52,7 +52,7 @@ export default function ExportModal(props: ExportModalProps) {
           } else {
             throw new Error('复制命令执行失败');
           }
-        } catch (err) {
+        } catch {
           throw new Error('无法复制到剪贴板');
         } finally {
           document.body.removeChild(textArea);

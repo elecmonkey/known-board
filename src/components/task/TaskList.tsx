@@ -1,9 +1,9 @@
-import { For, Show } from 'solid-js';
+import { Show } from 'solid-js';
 import { Key } from '@solid-primitives/keyed';
 import TaskSetItem from '@/components/task/TaskSetItem';
 import TaskItem from '@/components/task/TaskItem';
 import Divider from '@/components/layout/Divider';
-import { TreeNode, TaskSet, Task, isTaskSet } from '@/types/tree';
+import { TreeNode, isTaskSet } from '@/types/tree';
 
 interface TaskListProps {
   nodes: TreeNode[];

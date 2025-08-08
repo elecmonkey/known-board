@@ -1,4 +1,4 @@
-import { createSignal, JSX, createEffect } from 'solid-js';
+import { createSignal } from 'solid-js';
 
 interface BatchRenameModalProps {
   isOpen: boolean;
