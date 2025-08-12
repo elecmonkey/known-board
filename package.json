@@ -13,24 +13,25 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.32.0",
+    "@eslint/js": "^9.33.0",
     "@tailwindcss/vite": "^4.1.11",
-    "@types/node": "^24.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.39.0",
-    "@typescript-eslint/parser": "^8.39.0",
-    "eslint": "^9.32.0",
+    "@types/node": "^24.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
+    "eslint": "^9.33.0",
     "eslint-plugin-solid": "^0.14.5",
     "globals": "^16.3.0",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.39.0",
-    "vite": "^7.0.6",
+    "typescript-eslint": "^8.39.1",
+    "vite": "^7.1.2",
     "vite-plugin-solid": "^2.11.8"
   },
   "dependencies": {
     "@solid-primitives/keyed": "^1.5.2",
     "@solidjs/router": "^0.15.3",
     "@thisbeyond/solid-dnd": "^0.7.5",
-    "solid-js": "^1.9.7"
-  }
+    "solid-js": "^1.9.8"
+  },
+  "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f"
 }
