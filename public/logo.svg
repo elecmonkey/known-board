@@ -1,0 +1,27 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 - 更大更饱满 -->
+  <circle cx="32" cy="32" r="31" fill="#3B82F6" stroke="#1E40AF" stroke-width="1"/>
+  
+  <!-- 书本/知识象征 - 更大更粗 -->
+  <path d="M12 16 L12 48 C12 49.7 13.3 51 15 51 L26 51 C27.7 51 29 49.7 29 48 L29 18 C29 16.3 27.7 15 26 15 L15 15 C13.3 15 12 16.3 12 18 Z" fill="#FFFFFF" opacity="0.95"/>
+  
+  <!-- 看板/任务列表象征 - 更大更明显 -->
+  <rect x="35" y="12" width="16" height="4" rx="2" fill="#FFFFFF" opacity="0.9"/>
+  <rect x="35" y="20" width="14" height="4" rx="2" fill="#FFFFFF" opacity="0.75"/>
+  <rect x="35" y="28" width="12" height="4" rx="2" fill="#FFFFFF" opacity="0.6"/>
+  
+  <!-- 进度指示器/完成标记 - 超大突出 -->
+  <circle cx="42" cy="44" r="8" fill="#10B981" stroke="#FFFFFF" stroke-width="2"/>
+  <path d="M37 44 L40.5 47.5 L47 40.5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- 书页细节 - 更粗更明显 -->
+  <line x1="16" y1="22" x2="25" y2="22" stroke="#3B82F6" stroke-width="1.5" opacity="0.7"/>
+  <line x1="16" y1="27" x2="25" y2="27" stroke="#3B82F6" stroke-width="1.5" opacity="0.7"/>
+  <line x1="16" y1="32" x2="23" y2="32" stroke="#3B82F6" stroke-width="1.5" opacity="0.7"/>
+  <line x1="16" y1="37" x2="21" y2="37" stroke="#3B82F6" stroke-width="1.5" opacity="0.7"/>
+  
+  <!-- 装饰性元素 - 更大更明显 -->
+  <circle cx="48" cy="10" r="1.5" fill="#FBBF24" opacity="0.9"/>
+  <circle cx="52" cy="13" r="1.2" fill="#FBBF24" opacity="0.7"/>
+  <circle cx="50" cy="7" r="1" fill="#FBBF24" opacity="0.5"/>
+</svg>
