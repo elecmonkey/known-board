@@ -9,6 +9,10 @@ export default defineConfig({
   plugins: [solidPlugin(), tailwindcss(), prefetchManifest()],
   server: {
     port: 3000,
+    fs: {
+      // 允许访问node_modules中的WASM文件
+      allow: ['..']
+    }
   },
   build: {
     target: 'esnext',
@@ -21,4 +25,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // 确保WASM文件被正确处理
+  assetsInclude: ['**/*.wasm'],
+  optimizeDeps: {
+    exclude: ['json-packer-wasm'], // 排除WASM模块的预构建
+  }
 });

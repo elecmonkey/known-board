@@ -17,6 +17,9 @@ importers:
       '@thisbeyond/solid-dnd':
         specifier: ^0.7.5
         version: 0.7.5(solid-js@1.9.9)
+      json-packer-wasm:
+        specifier: ^0.1.1
+        version: 0.1.1
       solid-js:
         specifier: ^1.9.9
         version: 1.9.9
@@ -1002,6 +1005,9 @@ packages:
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
+
+  json-packer-wasm@0.1.1:
+    resolution: {integrity: sha512-PMrOqm7l0MTOCfX+a2eONsVjo+d6WXxBnR0bdmQup0KGyM8hPMivFrY+0tMJZMKPVjyIlt8O6UEP0uk3NQniRg==}
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
@@ -2289,6 +2295,8 @@ snapshots:
   jsesc@3.1.0: {}
 
   json-buffer@3.0.1: {}
+
+  json-packer-wasm@0.1.1: {}
 
   json-schema-traverse@0.4.1: {}
 

@@ -1,6 +1,6 @@
 import { createSignal, Show } from 'solid-js';
 import { AppStateV2 } from '@/types/app-state';
-import { exportDataAsJson } from '@/utils/importExport';
+import { exportDataAsJson, exportDataAsCompressed } from '@/utils/importExport';
 import { prepareExportData } from '@/utils/versionManager';
 
 interface ExportModalProps {
@@ -13,6 +13,7 @@ export default function ExportModal(props: ExportModalProps) {
   const [isExporting, setIsExporting] = createSignal(false);
   const [message, setMessage] = createSignal('');
   const [messageType, setMessageType] = createSignal<'success' | 'error' | ''>('');
+  const [isLoadingWasm, setIsLoadingWasm] = createSignal(false);
 
   const showMessage = (text: string, type: 'success' | 'error') => {
     setMessage(text);
@@ -66,7 +67,7 @@ export default function ExportModal(props: ExportModalProps) {
     }
   };
 
-  const handleDownloadFile = () => {
+  const handleDownloadJsonFile = () => {
     try {
       setIsExporting(true);
       
@@ -79,14 +80,40 @@ export default function ExportModal(props: ExportModalProps) {
         String(now.getMinutes()).padStart(2, '0') +
         String(now.getSeconds()).padStart(2, '0');
       
-      // 使用现有的导出函数，保持兼容性
-      exportDataAsJson(props.currentState, `known-board-export-${dateString}.json`);
-      showMessage('文件下载已开始！', 'success');
+      const filename = `known-board-export-${dateString}.json`;
+      exportDataAsJson(props.currentState, filename);
+      showMessage('JSON文件下载已开始！', 'success');
     } catch (error) {
       console.error('下载失败:', error);
       showMessage(error instanceof Error ? error.message : '下载失败', 'error');
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleDownloadCompressedFile = async () => {
+    try {
+      setIsExporting(true);
+      setIsLoadingWasm(true);
+      
+      // 生成文件名
+      const now = new Date();
+      const dateString = now.getFullYear() + 
+        '-' + String(now.getMonth() + 1).padStart(2, '0') + 
+        '-' + String(now.getDate()).padStart(2, '0') +
+        '-' + String(now.getHours()).padStart(2, '0') +
+        String(now.getMinutes()).padStart(2, '0') +
+        String(now.getSeconds()).padStart(2, '0');
+      
+      const filename = `known-board-export-${dateString}.kbz`;
+      await exportDataAsCompressed(props.currentState, filename);
+      showMessage('压缩文件下载已开始！', 'success');
+    } catch (error) {
+      console.error('压缩导出失败:', error);
+      showMessage(error instanceof Error ? error.message : '压缩导出失败', 'error');
+    } finally {
+      setIsExporting(false);
+      setIsLoadingWasm(false);
     }
   };
 
@@ -121,12 +148,26 @@ export default function ExportModal(props: ExportModalProps) {
             </button>
 
             <button
-              onClick={handleDownloadFile}
+              onClick={handleDownloadJsonFile}
               disabled={isExporting()}
               class="w-full p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left"
             >
-              <div class="text-sm font-medium">下载文件</div>
-              <div class="text-xs text-gray-500 mt-1">保存为 JSON 文件</div>
+              <div class="text-sm font-medium">下载标准文件</div>
+              <div class="text-xs text-gray-500 mt-1">保存为 .json 格式，兼容性最好</div>
+            </button>
+
+            <button
+              onClick={handleDownloadCompressedFile}
+              disabled={isExporting()}
+              class="w-full p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left"
+            >
+              <div class="text-sm font-medium">下载压缩文件</div>
+              <div class="text-xs text-gray-500 mt-1">保存为 .kbz 格式，文件更小</div>
+              <Show when={isLoadingWasm()}>
+                <div class="text-xs text-blue-600 mt-1">
+                  正在加载压缩模块...
+                </div>
+              </Show>
             </button>
           </div>
 

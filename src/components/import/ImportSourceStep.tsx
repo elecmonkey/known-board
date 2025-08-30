@@ -2,6 +2,7 @@ import { createSignal, Show, createMemo } from 'solid-js';
 import { ImportStepProps } from '@/types/import';
 import { AppStateV2 } from '@/types/app-state';
 import { loadAppData } from '@/utils/versionManager';
+import { importDataFromFile } from '@/utils/importExport';
 
 export default function ImportSourceStep(props: ImportStepProps) {
   const [pasteContent, setPasteContent] = createSignal('');
@@ -32,13 +33,16 @@ export default function ImportSourceStep(props: ImportStepProps) {
     try {
       props.onStateChange({ error: null, isProcessing: true });
       
-      const rawContent = await file.text();
+      // 使用统一的文件导入函数，自动检测格式
+      const parsedData = await importDataFromFile(file);
       
-      // 先用我们自己的校验逻辑
-      const parsedData = await parseJsonContent(rawContent);
+      // 对于二进制文件，无法获取原始内容，使用文件名作为标识
+      const rawData = file.name.toLowerCase().endsWith('.kbz') 
+        ? `[二进制压缩文件: ${file.name}]`
+        : await file.text();
       
       props.onStateChange({
-        rawData: rawContent,
+        rawData,
         parsedData: parsedData,
         isProcessing: false
       });
@@ -56,7 +60,7 @@ export default function ImportSourceStep(props: ImportStepProps) {
   const handleFileSelect = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.json';
+    input.accept = '.json,.kbz';
     
     input.onchange = (event) => {
       const file = (event.target as HTMLInputElement).files?.[0];
@@ -112,10 +116,11 @@ export default function ImportSourceStep(props: ImportStepProps) {
     const files = e.dataTransfer?.files;
     if (files && files.length > 0) {
       const file = files[0];
-      if (file.type === 'application/json' || file.name.endsWith('.json')) {
+      const fileName = file.name.toLowerCase();
+      if (file.type === 'application/json' || fileName.endsWith('.json') || fileName.endsWith('.kbz')) {
         await handleFileUpload(file);
       } else {
-        props.onStateChange({ error: '请选择JSON文件' });
+        props.onStateChange({ error: '请选择 JSON 或 KBZ 文件' });
       }
     }
   };
@@ -179,7 +184,7 @@ export default function ImportSourceStep(props: ImportStepProps) {
             >
               <div class="space-y-2">
                 <div class="text-gray-500 text-sm">
-                  拖拽JSON文件到此处，或者
+                  拖拽文件到此处，支持 .json 和 .kbz 格式，或者
                 </div>
                 <button
                   onClick={handleFileSelect}
