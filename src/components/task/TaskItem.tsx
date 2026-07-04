@@ -383,7 +383,7 @@ export default function TaskItem(props: TaskItemProps) {
                     分集
                   </button>
                 </div>
-                <Show when={props.task.episodes.length > 0}>
+                <Show when={(props.task.episodes?.length || 0) > 0}>
                   <span class="text-gray-300">|</span>
                   <button
                     onClick={() => setShowBatchRenameModal(true)}

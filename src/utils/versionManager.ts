@@ -7,24 +7,29 @@ import { TreeNode, isTaskSet } from '@/types/tree';
 
 export const CURRENT_VERSION = '2.0' as const;
 
+type UnknownRecord = Record<string, unknown>;
+
+function isRecord(value: unknown): value is UnknownRecord {
+  return value !== null && typeof value === 'object';
+}
+
 /**
  * 检测数据版本
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function detectDataVersion(data: any): '1.0' | '2.0' | 'unknown' {
-  if (!data || typeof data !== 'object') {
+export function detectDataVersion(data: unknown): '1.0' | '2.0' | 'unknown' {
+  if (!isRecord(data)) {
     return 'unknown';
   }
 
   // 检查是否为 2.0 版本
-  if (data.version === '2.0' && Array.isArray(data.children)) {
+  if ('version' in data && data.version === '2.0' && 'children' in data && Array.isArray(data.children)) {
     return '2.0';
   }
 
   // 检查是否为 1.0 版本（显式或隐式）
   if (
-    data.version === '1.0' || 
-    (Array.isArray(data.taskSets) && Array.isArray(data.tasks))
+    ('version' in data && data.version === '1.0') ||
+    ('taskSets' in data && Array.isArray(data.taskSets) && 'tasks' in data && Array.isArray(data.tasks))
   ) {
     return '1.0';
   }
@@ -35,11 +40,12 @@ export function detectDataVersion(data: any): '1.0' | '2.0' | 'unknown' {
 /**
  * 验证 TreeNode 结构的有效性
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function validateTreeNode(node: any): node is TreeNode {
+export function validateTreeNode(node: unknown): node is TreeNode {
+  if (!isRecord(node)) {
+    return false;
+  }
+
   return (
-    node &&
-    typeof node === 'object' &&
     typeof node.id === 'string' &&
     (node.type === 'task' || node.type === 'taskSet') &&
     typeof node.title === 'string' &&
@@ -50,11 +56,12 @@ export function validateTreeNode(node: any): node is TreeNode {
 /**
  * 验证 AppStateV2 结构的有效性
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function validateAppStateV2(data: any): data is AppStateV2 {
+export function validateAppStateV2(data: unknown): data is AppStateV2 {
+  if (!isRecord(data)) {
+    return false;
+  }
+
   return (
-    data &&
-    typeof data === 'object' &&
     data.version === '2.0' &&
     Array.isArray(data.children) &&
     data.children.every(validateTreeNode)
@@ -143,8 +150,7 @@ export function migrateV1ToV2(v1Data: AppStateV1): AppStateV2 {
 /**
  * 通用数据加载器 - 自动处理版本检测和迁移
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function loadAppData(rawData: any): AppStateV2 {
+export function loadAppData(rawData: unknown): AppStateV2 {
   const version = detectDataVersion(rawData);
 
   switch (version) {

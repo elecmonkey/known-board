@@ -4,6 +4,7 @@ import { useApp } from '@/store';
 import ImportWizard from '@/components/import/ImportWizard';
 import ExportModal from '@/components/export/ExportModal';
 import GithubIcon from '@/components/icons/GithubIcon';
+import type { AppStateV2 } from '@/types/app-state';
 
 export default function Footer() {
   const { state, importData } = useApp();
@@ -18,7 +19,7 @@ export default function Footer() {
     setShowImportWizard(true);
   };
   
-  const handleImportConfirm = (finalData) => {
+  const handleImportConfirm = (finalData: AppStateV2) => {
     importData(finalData);
     setShowImportWizard(false);
   };

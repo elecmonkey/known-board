@@ -91,8 +91,9 @@ export default function ImportWizard(props: ImportWizardProps) {
     
     if (nextStep) {
       // 如果要进入冲突解决步骤，先检测并设置冲突信息
-      if (nextStep === 'conflict' && state().parsedData) {
-        const conflictInfo = detectConflicts(props.currentState.children, state().parsedData.children);
+      const parsedData = state().parsedData;
+      if (nextStep === 'conflict' && parsedData) {
+        const conflictInfo = detectConflicts(props.currentState.children, parsedData.children);
         updateState({ step: nextStep, conflicts: conflictInfo.conflicts });
       } else {
         updateState({ step: nextStep });
